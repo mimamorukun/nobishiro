@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>のびしろ診断｜子×親＝無限の可能性</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #4a7c6f;
+    --green-light: #7aab9a;
+    --green-pale: #e8f4f0;
+    --cream: #fdf8f2;
+    --text: #2d2d2d;
+    --text-light: #6b6b6b;
+    --shadow: 0 4px 24px rgba(74,124,111,0.12);
+    --radius: 20px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Noto Sans JP',sans-serif; background:var(--cream); color:var(--text); min-height:100vh; padding:20px; }
+  .container { max-width:600px; margin:0 auto; }
+
+  .header { text-align:center; padding:40px 20px 20px; }
+  .badge { display:inline-block; background:var(--green); color:white; font-size:11px; font-weight:700; letter-spacing:2px; padding:6px 16px; border-radius:20px; margin-bottom:16px; }
+  .header h1 { font-family:'Noto Serif JP',serif; font-size:24px; font-weight:700; line-height:1.6; margin-bottom:10px; }
+  .header p { font-size:13px; color:var(--text-light); line-height:1.8; }
+  .divider { display:flex; align-items:center; justify-content:center; gap:12px; margin:20px 0; color:var(--green-light); }
+  .divider::before,.divider::after { content:''; flex:1; height:1px; background:linear-gradient(to right,transparent,var(--green-light)); }
+  .divider::after { background:linear-gradient(to left,transparent,var(--green-light)); }
+
+  /* Start */
+  .start-card { background:white; border-radius:var(--radius); padding:36px 28px; box-shadow:var(--shadow); text-align:center; }
+  .start-card .icon { font-size:52px; margin-bottom:16px; }
+  .start-card h2 { font-family:'Noto Serif JP',serif; font-size:19px; font-weight:700; line-height:1.6; margin-bottom:14px; }
+  .start-card p { font-size:13px; color:var(--text-light); line-height:1.9; margin-bottom:24px; }
+  .feature-list { display:flex; flex-direction:column; gap:10px; margin-bottom:28px; text-align:left; }
+  .feature-item { display:flex; align-items:center; gap:10px; font-size:13px; }
+  .feature-item span:first-child { font-size:18px; }
+  .start-btn { width:100%; background:var(--green); border:none; border-radius:14px; padding:18px; font-family:'Noto Sans JP',sans-serif; font-size:16px; font-weight:700; color:white; cursor:pointer; transition:all .2s; }
+  .start-btn:hover { background:var(--green-light); transform:translateY(-2px); box-shadow:0 8px 24px rgba(74,124,111,.3); }
+  .time-note { margin-top:10px; font-size:12px; color:var(--text-light); }
+
+  /* Progress */
+  .progress-wrap { margin-bottom:24px; }
+  .progress-info { display:flex; justify-content:space-between; font-size:12px; color:var(--text-light); margin-bottom:8px; }
+  .progress-bar { height:6px; background:#e0ede9; border-radius:10px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(to right,var(--green),var(--green-light)); border-radius:10px; transition:width .5s ease; }
+
+  /* Question */
+  .question-card { background:white; border-radius:var(--radius); padding:32px 28px; box-shadow:var(--shadow); margin-bottom:20px; animation:fadeUp .4s ease; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  .question-num { font-size:11px; font-weight:700; color:var(--green); letter-spacing:2px; margin-bottom:10px; }
+  .question-text { font-family:'Noto Serif JP',serif; font-size:17px; font-weight:700; line-height:1.7; margin-bottom:22px; }
+  .options { display:flex; flex-direction:column; gap:10px; }
+  .option-btn { background:var(--green-pale); border:2px solid transparent; border-radius:14px; padding:14px 18px; text-align:left; cursor:pointer; font-family:'Noto Sans JP',sans-serif; font-size:13px; color:var(--text); line-height:1.6; transition:all .2s; display:flex; align-items:center; gap:12px; }
+  .option-btn:hover { border-color:var(--green); background:white; transform:translateY(-2px); box-shadow:0 4px 16px rgba(74,124,111,.15); }
+  .option-btn.selected { border-color:var(--green); background:white; box-shadow:0 4px 16px rgba(74,124,111,.2); }
+  .option-icon { width:30px; height:30px; border-radius:50%; background:white; display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; border:1px solid #ddd; }
+  .option-btn.selected .option-icon { background:var(--green); border-color:var(--green); color:white; }
+
+  .nav-btns { display:flex; gap:12px; justify-content:flex-end; }
+  .btn-back { background:white; border:2px solid #ddd; border-radius:12px; padding:13px 22px; font-family:'Noto Sans JP',sans-serif; font-size:14px; color:var(--text-light); cursor:pointer; transition:all .2s; }
+  .btn-back:hover { border-color:var(--green); color:var(--green); }
+  .btn-next { background:var(--green); border:none; border-radius:12px; padding:13px 28px; font-family:'Noto Sans JP',sans-serif; font-size:14px; font-weight:700; color:white; cursor:pointer; transition:all .2s; opacity:.4; pointer-events:none; }
+  .btn-next.active { opacity:1; pointer-events:all; }
+  .btn-next.active:hover { background:var(--green-light); transform:translateY(-2px); }
+
+  /* Result */
+  .result-card { background:white; border-radius:var(--radius); padding:40px 28px; box-shadow:var(--shadow); display:none; animation:fadeUp .5s ease; }
+  .result-top { text-align:center; margin-bottom:28px; }
+  .result-emoji { font-size:56px; margin-bottom:14px; display:block; }
+  .result-label { font-size:11px; font-weight:700; color:var(--green); letter-spacing:2px; margin-bottom:6px; }
+  .result-title { font-family:'Noto Serif JP',serif; font-size:22px; font-weight:700; line-height:1.5; margin-bottom:10px; }
+  .result-subtitle { font-size:13px; color:var(--text-light); line-height:1.8; }
+  .result-section { margin-bottom:22px; }
+  .result-section-title { font-size:11px; font-weight:700; color:var(--green); letter-spacing:1px; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--green-pale); }
+  .result-section p { font-size:14px; line-height:1.9; }
+  .tag-list { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+  .tag { background:var(--green-pale); color:var(--green); font-size:12px; font-weight:700; padding:5px 12px; border-radius:20px; }
+  .advice-box { background:var(--green-pale); border-left:4px solid var(--green); border-radius:0 12px 12px 0; padding:16px 20px; margin-top:10px; }
+  .advice-box p { font-size:14px; line-height:1.9; }
+  .tokufu-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px; }
+  .tokufu-box { border-radius:14px; padding:16px; }
+  .tokufu-box.tokui { background:#e8f4f0; border:1px solid #b2d8cc; }
+  .tokufu-box.nigate { background:#fff4ee; border:1px solid #f0c8aa; }
+  .tokufu-title { font-size:11px; font-weight:700; letter-spacing:1px; margin-bottom:10px; }
+  .tokufu-box.tokui .tokufu-title { color:var(--green); }
+  .tokufu-box.nigate .tokufu-title { color:#c0724a; }
+  .tokufu-list { list-style:none; display:flex; flex-direction:column; gap:6px; }
+  .tokufu-list li { font-size:12px; line-height:1.6; display:flex; align-items:flex-start; gap:6px; }
+  .tokufu-list li::before { content:'●'; font-size:8px; margin-top:4px; flex-shrink:0; }
+  .tokufu-box.tokui .tokufu-list li::before { color:var(--green); }
+  .tokufu-box.nigate .tokufu-list li::before { color:#c0724a; }
+  .parent-box { background:#fffbf5; border:1px solid #f0e8d8; border-radius:14px; padding:20px; margin-top:10px; }
+  .parent-box .parent-title { font-family:'Noto Serif JP',serif; font-size:16px; font-weight:700; margin-bottom:8px; }
+  .parent-box p { font-size:13px; line-height:1.9; color:var(--text-light); }
+
+  /* LINE CTA */
+  .cta-box { background:linear-gradient(135deg,#06c755,#00a040); border-radius:var(--radius); padding:28px; text-align:center; margin-top:28px; color:white; }
+  .cta-box h3 { font-family:'Noto Serif JP',serif; font-size:17px; font-weight:700; margin-bottom:10px; }
+  .cta-box p { font-size:13px; line-height:1.9; margin-bottom:18px; opacity:.95; }
+  .line-btn { display:inline-flex; align-items:center; gap:10px; background:white; color:#06c755; font-weight:700; font-size:15px; padding:14px 32px; border-radius:12px; text-decoration:none; transition:all .2s; }
+  .line-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,.2); }
+  .line-btn svg { width:22px; height:22px; }
+  .line-note { margin-top:10px; font-size:11px; opacity:.8; }
+
+  .retry-btn { display:block; width:100%; background:white; border:2px solid #ddd; border-radius:12px; padding:13px; font-family:'Noto Sans JP',sans-serif; font-size:14px; color:var(--text-light); cursor:pointer; margin-top:12px; transition:all .2s; }
+  .retry-btn:hover { border-color:var(--green); color:var(--green); }
+  .nobio-sign { text-align:center; margin-top:20px; font-size:12px; color:var(--text-light); }
+
+  #screen-start,#screen-quiz,#screen-result { display:none; }
+  #screen-start { display:block; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="badge">のびしろ｜子×親＝無限の可能性</div>
+    <h1>わが子の才能と<br>あなたの子育てスタイルを知ろう</h1>
+    <div class="divider">🌱</div>
+  </div>
+
+  <!-- Start -->
+  <div id="screen-start">
+    <div class="start-card">
+      <div class="icon">🌱</div>
+      <h2>のびしろ診断<br>子どもの性格タイプ＆<br>親の子育てスタイル</h2>
+      <p>子×親＝無限の可能性。<br>15問で、お子さんの強みとあなたに合った<br>関わり方がわかります。</p>
+      <div class="feature-list">
+        <div class="feature-item"><span>🔍</span><span>子どもの性格を<strong>6タイプ</strong>で診断</span></div>
+        <div class="feature-item"><span>👨‍👩‍👧</span><span>あなたの子育てスタイルも同時にわかる</span></div>
+        <div class="feature-item"><span>💡</span><span>タイプ別の具体的な関わり方アドバイス付き</span></div>
+        <div class="feature-item"><span>📩</span><span>結果を見て深掘りレポートも閲覧できる</span></div>
+      </div>
+      <button class="start-btn" onclick="startQuiz()">診断スタート 🌱</button>
+      <div class="time-note">⏱ 所要時間：約3〜4分</div>
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <div id="screen-quiz">
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span id="progress-text">1 / 15問</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="question-card" id="question-card">
+      <div class="question-num" id="q-num">QUESTION 01</div>
+      <div class="question-text" id="q-text"></div>
+      <div class="options" id="q-options"></div>
+    </div>
+    <div class="nav-btns" style="justify-content:flex-start;">
+      <button class="btn-back" id="btn-back" onclick="prevQuestion()">← もどる</button>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div id="screen-result">
+    <div class="result-card" id="result-card">
+      <div class="result-top">
+        <span class="result-emoji" id="r-emoji"></span>
+        <div class="result-label">子どものタイプ</div>
+        <div class="result-title" id="r-child-title"></div>
+        <div class="result-subtitle" id="r-child-sub"></div>
+      </div>
+      <div class="result-section">
+        <div class="result-section-title">✨ このタイプの強み</div>
+        <div class="tag-list" id="r-strengths"></div>
+      </div>
+      <div class="result-section">
+        <div class="result-section-title">💬 のびしろからのアドバイス</div>
+        <div class="advice-box"><p id="r-advice"></p></div>
+      </div>
+      <div class="result-section">
+        <div class="result-section-title">📊 得意なこと・苦手なこと</div>
+        <div class="tokufu-grid">
+          <div class="tokufu-box tokui">
+            <div class="tokufu-title">✨ 得意なこと</div>
+            <ul class="tokufu-list" id="r-tokui"></ul>
+          </div>
+          <div class="tokufu-box nigate">
+            <div class="tokufu-title">🌱 苦手なこと</div>
+            <ul class="tokufu-list" id="r-nigate"></ul>
+          </div>
+        </div>
+      </div>
+      <div class="divider">🌿</div>
+      <div class="result-section">
+        <div class="result-section-title">👨‍👩‍👧 あなたの子育てスタイル</div>
+        <div class="parent-box">
+          <div class="parent-title" id="r-parent-title"></div>
+          <p id="r-parent-desc"></p>
+        </div>
+      </div>
+
+      <!-- Next Step CTA -->
+      <div class="cta-box">
+        <h3>📊 もっと詳しく知りたい方へ<br>深掘り分析レポートをどうぞ</h3>
+        <p>あなたとお子さんの組み合わせに基づいた<br>「具体的な関わり方」「3ヶ月後の目指す姿」<br>「研究データに基づく解説」がわかります。<br>子×親＝無限の可能性。その見つけ方を。</p>
+        <a href="nobio_report.html" class="line-btn">
+          📄 深掘り分析レポートを見る
+        </a>
+        <div class="line-note">⏱ 約3〜5分で読めます（無料）</div>
+      </div>
+
+      <button class="retry-btn" onclick="resetQuiz()">🔄 もう一度診断する</button>
+      <div class="nobio-sign">のびしろ｜のびお先生 / 元小学校教員9年 / 教育コンサルタント</div>
+    </div>
+  </div>
+
+</div>
+<script>
+const questions = [
+  {
+    text: "子どもは初めての場所・初対面の人に対して、どんな様子ですか？",
+    options: [
+      { text: "すぐ馴染んで積極的に話しかける", icon: "😄", scores: {A:2,B:0,C:0,D:0,E:0,F:0} },
+      { text: "最初は観察してからゆっくり動く", icon: "🔍", scores: {A:0,B:2,C:0,D:0,E:0,F:0} },
+      { text: "一人で黙々と自分の世界に入る", icon: "🎨", scores: {A:0,B:0,C:2,D:0,E:0,F:0} },
+      { text: "親や仲の良い友達の近くにいる", icon: "🤝", scores: {A:0,B:0,C:0,D:2,E:0,F:0} }
+    ]
+  },
+  {
+    text: "子どもが一番生き生きしているのはどんなときですか？",
+    options: [
+      { text: "みんなの前で活躍・注目されるとき", icon: "⭐", scores: {A:2,B:0,C:0,D:0,E:0,F:0} },
+      { text: "「なぜ？」を深掘りしているとき", icon: "🔬", scores: {A:0,B:2,C:0,D:0,E:0,F:0} },
+      { text: "自分だけの作品を作っているとき", icon: "🎭", scores: {A:0,B:0,C:2,D:0,E:0,F:0} },
+      { text: "誰かの役に立てていると感じるとき", icon: "💚", scores: {A:0,B:0,C:0,D:2,E:0,F:0} }
+    ]
+  },
+  {
+    text: "子どもが何かに取り組むときの特徴は？",
+    options: [
+      { text: "すぐ飽きて別のことを始めがち", icon: "⚡", scores: {A:2,B:0,C:0,D:0,E:0,F:0} },
+      { text: "納得するまでとことん調べる", icon: "📚", scores: {A:0,B:2,C:0,D:0,E:0,F:0} },
+      { text: "一つのことに長時間没頭できる", icon: "🎯", scores: {A:0,B:0,C:2,D:0,E:0,F:0} },
+      { text: "誰かと一緒だと長続きする", icon: "👫", scores: {A:0,B:0,C:0,D:2,E:0,F:0} }
+    ]
+  },
+  {
+    text: "失敗したとき、子どもはどんな反応をしますか？",
+    options: [
+      { text: "すぐ立ち直ってまた挑戦する", icon: "💪", scores: {A:2,B:0,C:0,D:0,E:0,F:0} },
+      { text: "なぜ失敗したか原因を分析する", icon: "🤔", scores: {A:0,B:2,C:0,D:0,E:0,F:0} },
+      { text: "しばらく落ち込んで自分で立て直す", icon: "🌧", scores: {A:0,B:0,C:2,D:0,E:0,F:0} },
+      { text: "誰かに話を聞いてもらうと元気になる", icon: "💬", scores: {A:0,B:0,C:0,D:2,E:0,F:0} }
+    ]
+  },
+  {
+    text: "子どもの好きな遊びはどれに近いですか？",
+    options: [
+      { text: "体を動かす遊び・冒険・スポーツ", icon: "🏃", scores: {A:2,B:0,C:0,D:0,E:0,F:0} },
+      { text: "パズル・図鑑・知識を集める遊び", icon: "🧩", scores: {A:0,B:2,C:0,D:0,E:0,F:0} },
+      { text: "絵を描く・工作・音楽など創作系", icon: "🎨", scores: {A:0,B:0,C:2,D:0,E:0,F:0} },
+      { text: "友達とのごっこ遊び・おしゃべり", icon: "🌸", scores: {A:0,B:0,C:0,D:2,E:0,F:0} }
+    ]
+  },
+  {
+    text: "子どもが学校で困っていそうなことは？",
+    options: [
+      { text: "じっとしていること・待つこと", icon: "⚡", scores: {A:2,B:0,C:0,D:0,E:0,F:0} },
+      { text: "理由のわからないルールや曖昧な指示", icon: "❓", scores: {A:0,B:2,C:0,D:0,E:0,F:0} },
+      { text: "大勢の前での発表や集団行動", icon: "👥", scores: {A:0,B:0,C:2,D:0,E:0,F:0} },
+      { text: "一人での作業・孤独感", icon: "😔", scores: {A:0,B:0,C:0,D:2,E:0,F:0} }
+    ]
+  },
+  {
+    text: "子どもの自己主張はどんなタイプですか？",
+    options: [
+      { text: "はっきり言いすぎるくらい言える", icon: "📢", scores: {A:2,B:0,C:0,D:0,E:0,F:0} },
+      { text: "論理的に順序立てて伝えられる", icon: "📊", scores: {A:0,B:2,C:0,D:0,E:0,F:0} },
+      { text: "言葉より行動や作品で表現する", icon: "🎭", scores: {A:0,B:0,C:2,D:0,E:0,F:0} },
+      { text: "信頼できる人にだけ本音を話す", icon: "🔐", scores: {A:0,B:0,C:0,D:2,E:0,F:0} }
+    ]
+  },
+  {
+    text: "学校に行きたくないと言ったとき、あなたはまずどうしますか？",
+    options: [
+      { text: "「何があったの？」と原因を聞く", icon: "🔍", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:2,Q:0,R:0,S:0} },
+      { text: "「休んでいいよ」とまず受け止める", icon: "🤗", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:0,Q:2,R:0,S:0} },
+      { text: "先生・学校に連絡して確認する", icon: "📞", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:0,Q:0,R:2,S:0} },
+      { text: "「気持ちわかるよ」と共感してから聞く", icon: "💬", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:0,Q:0,R:0,S:2} }
+    ],
+    parent: true
+  },
+  {
+    text: "子どもを褒めるとき、どんな言葉をよく使いますか？",
+    options: [
+      { text: "「頑張ったね」「諦めなかったね」", icon: "💪", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:0,Q:2,R:0,S:0} },
+      { text: "「自分ではどう思う？」と問いかける", icon: "🤔", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:0,Q:0,R:0,S:2} },
+      { text: "「一緒にやってみよう」", icon: "🤝", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:0,Q:0,R:2,S:0} },
+      { text: "「すごいね！やったね！」", icon: "⭐", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:2,Q:0,R:0,S:0} }
+    ],
+    parent: true
+  },
+  {
+    text: "子育てで一番大切にしていることは何ですか？",
+    options: [
+      { text: "自己肯定感を育てること", icon: "🌟", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:0,Q:2,R:0,S:0} },
+      { text: "主体性・自分で考える力", icon: "💡", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:0,Q:0,R:0,S:2} },
+      { text: "安心できる環境をつくること", icon: "🏠", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:0,Q:0,R:2,S:0} },
+      { text: "たくさんの経験をさせること", icon: "🌍", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:2,Q:0,R:0,S:0} }
+    ],
+    parent: true
+  },
+  {
+    text: "子どもが友達とトラブルになったとき、あなたはどうしますか？",
+    options: [
+      { text: "子どもの話をじっくり聞いてから判断する", icon: "👂", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:0,Q:2,R:0,S:0} },
+      { text: "「相手はどう思ってたんだろう」と一緒に考える", icon: "💭", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:0,Q:0,R:0,S:2} },
+      { text: "学校・先生に相談して解決策を探す", icon: "🏫", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:0,Q:0,R:2,S:0} },
+      { text: "まず子どもの気持ちに共感する", icon: "🤗", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:2,Q:0,R:0,S:0} }
+    ],
+    parent: true
+  },
+  {
+    text: "子どもが一番輝いている場面はどれですか？",
+    options: [
+      { text: "チームのリーダーとして引っ張るとき", icon: "🏆", scores: {A:2,B:0,C:0,D:0,E:0,F:0} },
+      { text: "誰も気づかないことに気づいたとき", icon: "💡", scores: {A:0,B:2,C:0,D:0,E:0,F:0} },
+      { text: "自分の作品や表現をほめられたとき", icon: "🎨", scores: {A:0,B:0,C:2,D:0,E:0,F:0} },
+      { text: "困っている友達を助けられたとき", icon: "💚", scores: {A:0,B:0,C:0,D:2,E:0,F:0} }
+    ]
+  },
+  {
+    text: "子どもの「苦手なこと」はどれに近いですか？",
+    options: [
+      { text: "細かいルールや長時間の我慢", icon: "😤", scores: {A:2,B:0,C:0,D:0,E:0,F:0} },
+      { text: "感情的な場面・空気を読むこと", icon: "😕", scores: {A:0,B:2,C:0,D:0,E:0,F:0} },
+      { text: "集団の中での協調・目立つこと", icon: "😰", scores: {A:0,B:0,C:2,D:0,E:0,F:0} },
+      { text: "一人でいること・競争すること", icon: "😟", scores: {A:0,B:0,C:0,D:2,E:0,F:0} }
+    ]
+  },
+  {
+    text: "子育てで「難しいな」と感じることは何ですか？",
+    options: [
+      { text: "エネルギーについていくのが大変", icon: "😅", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:2,Q:0,R:0,S:0} },
+      { text: "「なぜ？」に答え続けるのが難しい", icon: "🤔", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:0,Q:2,R:0,S:0} },
+      { text: "感情を引き出すのが難しい", icon: "💭", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:0,Q:0,R:0,S:2} },
+      { text: "繊細さ・傷つきやすさへの対応", icon: "🌧", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:0,Q:0,R:2,S:0} }
+    ],
+    parent: true
+  },
+  {
+    text: "「もっとこうできたら」と思うことは？",
+    options: [
+      { text: "もっと子どもの気持ちに寄り添いたい", icon: "💚", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:0,Q:2,R:0,S:0} },
+      { text: "もっと自由にさせてあげたい", icon: "🌈", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:2,Q:0,R:0,S:0} },
+      { text: "もっと一緒に時間を過ごしたい", icon: "⏰", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:0,Q:0,R:2,S:0} },
+      { text: "もっと子どもの可能性を信じたい", icon: "⭐", scores: {A:0,B:0,C:0,D:0,E:0,F:0}, parentScore: {P:0,Q:0,R:0,S:2} }
+    ],
+    parent: true
+  }
+];
+
+const childTypes = {
+  A: {
+    emoji: "⚡",
+    title: "チャレンジャータイプ",
+    sub: "エネルギッシュで行動力抜群。失敗を恐れず前に進む開拓者です。",
+    strengths: ["行動力", "リーダーシップ", "回復力", "チャレンジ精神", "明るさ", "瞬発力"],
+    tokui: ["新しいことへの挑戦", "人を引っ張ること", "体を使った表現", "失敗からの立て直し"],
+    nigate: ["じっとして待つこと", "細かいルールの遵守", "長時間の集中作業", "感情を言葉にすること"],
+    advice: "「やってみていいよ」の一言が最高のギフトです。失敗しても責めずに「どうすればよかったと思う？」と一緒に考えてあげてください。エネルギーをぶつけられる目標を与えると、驚くほど伸びます。じっとさせることよりも、動きながら学べる環境が合っています。"
+  },
+  B: {
+    emoji: "🔬",
+    title: "探求者タイプ",
+    sub: "深く考え、論理的に物事を理解しようとする知的好奇心旺盛なタイプです。",
+    strengths: ["論理的思考", "集中力", "知識への探求心", "分析力", "粘り強さ", "正確さ"],
+    tokui: ["物事の仕組みを理解すること", "データや事実の整理", "一つのテーマを深掘りすること", "計画を立てること"],
+    nigate: ["曖昧な指示への対応", "感情的な場面の処理", "急な予定変更", "理由のわからないルール"],
+    advice: "「なぜ？」を大切にしてあげてください。曖昧な答えを嫌うので、「わからないときは一緒に調べよう」という姿勢が信頼につながります。勉強は「わかる楽しさ」を体験させてあげると自分から動き始めます。ルールの理由を丁寧に説明してあげることが大切です。"
+  },
+  C: {
+    emoji: "🎨",
+    title: "クリエイタータイプ",
+    sub: "独自の感性と世界観を持つ、自分らしさを大切にする表現者タイプです。",
+    strengths: ["創造力", "感性の豊かさ", "独自性", "集中力", "表現力", "こだわり"],
+    tokui: ["絵・音楽・文章などの表現活動", "独自のアイデアを形にすること", "一人で集中して取り組むこと", "細部へのこだわり"],
+    nigate: ["集団での一斉行動", "人前での発表", "自分の作品を否定されること", "画一的なルールへの適応"],
+    advice: "この子は「正解」より「自分らしさ」が輝きます。作品や行動を「あなたらしいね」と言葉にしてあげてください。人と比べず「あなたはあなたでいい」というメッセージを毎日伝えることが自己肯定感の土台になります。静かに没頭できる時間と空間を作ってあげてください。"
+  },
+  D: {
+    emoji: "💚",
+    title: "共感者タイプ",
+    sub: "人の気持ちに敏感で、思いやりと絆を大切にする温かいハートの持ち主です。",
+    strengths: ["共感力", "思いやり", "協調性", "信頼関係を築く力", "気遣い", "場の空気を読む力"],
+    tokui: ["人の気持ちを察すること", "チームでの協力", "相手に合わせたコミュニケーション", "場の雰囲気を和ませること"],
+    nigate: ["競争や勝負ごと", "一人での長時間作業", "人間関係のトラブル対応", "感情を切り離した判断"],
+    advice: "「一人じゃないよ」という安心感が一番の力になります。感受性が豊かなぶん傷つきやすい面もあるので、気持ちを否定せず「そう感じたんだね」と受け止めてあげてください。信頼できる大人が一人いるだけで、大きく変わります。"
+  },
+  E: {
+    emoji: "🌟",
+    title: "ビジョナリータイプ",
+    sub: "大きな夢と理想を持ち、自分なりの世界観でまわりを動かす先駆者タイプです。",
+    strengths: ["理想を描く力", "カリスマ性", "発想力", "熱量", "人を巻き込む力", "直感力"],
+    tokui: ["大きなビジョンを描くこと", "人をモチベートすること", "新しい発想を生み出すこと", "直感的な判断"],
+    nigate: ["細かい作業の継続", "現実的な計画の実行", "批判や否定への対応", "地道なルーティン作業"],
+    advice: "この子の「こうしたい！」という気持ちを否定しないでください。現実的な指摘より「どうすればできると思う？」という問いかけが伸びるきっかけになります。大きな夢を笑わず、一緒に考えてあげることが最大のサポートです。"
+  },
+  F: {
+    emoji: "🌱",
+    title: "堅実成長タイプ",
+    sub: "コツコツ積み上げることが得意で、安定した環境で着実に伸びるタイプです。",
+    strengths: ["継続力", "誠実さ", "安定感", "責任感", "丁寧さ", "信頼されやすさ"],
+    tokui: ["コツコツ積み上げること", "約束を守ること", "丁寧で正確な作業", "安定した人間関係の維持"],
+    nigate: ["急な変化への対応", "プレッシャーのかかる場面", "他者との比較", "スピードを求められる作業"],
+    advice: "「焦らなくていい」「あなたのペースでいい」という言葉が最大の力になります。人と比べるのではなく、昨日の自分との比較で褒めてあげてください。小さな成功体験を積み重ねることで、ゆっくりと確実に自信がついていきます。"
+  }
+};
+
+const parentTypes = {
+  P: {
+    title: "🌟 応援・伴走型",
+    desc: "子どもの挑戦を後押しし、一緒に走ることを大切にしているタイプです。子どもの可能性を信じる力がとても強い。時に「少し見守る」時間を意識すると、子どもの主体性がさらに育ちます。"
+  },
+  Q: {
+    title: "🌱 共感・受容型",
+    desc: "子どもの気持ちに寄り添い、感情を大切にするタイプです。のびお先生が最も大切にしているスタイルに近い。そのまま続けてください。たまに「どうしたいと思う？」と問いかけるだけで主体性も育ちます。"
+  },
+  R: {
+    title: "🏫 連携・サポート型",
+    desc: "学校や周りと協力して子どもを育てることを大切にするタイプです。チームで子育てする力が強い。家での「二人だけの時間」を少し増やすと、子どもとの信頼関係がさらに深まります。"
+  },
+  S: {
+    title: "💡 自立・探求支援型",
+    desc: "子どもが自分で考え、決めることを尊重するタイプです。主体性を育てる力がとても高い。答えを出す前に「どう感じた？」と感情にも寄り添うと、より豊かな関わりになります。"
+  }
+};
+
+let current = 0;
+let childScores = {A:0,B:0,C:0,D:0,E:0,F:0};
+let parentScores = {P:0,Q:0,R:0,S:0};
+let answers = [];
+let appliedScores = [];
+
+function startQuiz() {
+  document.getElementById('screen-start').style.display = 'none';
+  document.getElementById('screen-quiz').style.display = 'block';
+  showQuestion(0);
+}
+
+function showQuestion(idx) {
+  const q = questions[idx];
+  document.getElementById('q-num').textContent = `QUESTION ${String(idx+1).padStart(2,'0')}`;
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('progress-text').textContent = `${idx+1} / ${questions.length}問`;
+  const pct = Math.round((idx / questions.length) * 100);
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+  const optContainer = document.getElementById('q-options');
+  optContainer.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn' + (answers[idx] === i ? ' selected' : '');
+    btn.innerHTML = `<span class="option-icon">${answers[idx] === i ? '✓' : opt.icon}</span><span>${opt.text}</span>`;
+    btn.onclick = () => selectOption(i);
+    optContainer.appendChild(btn);
+  });
+  document.getElementById('btn-back').style.visibility = idx === 0 ? 'hidden' : 'visible';
+  const card = document.getElementById('question-card');
+  card.style.animation = 'none'; card.offsetHeight; card.style.animation = 'fadeUp 0.4s ease';
+}
+
+function selectOption(i) {
+  answers[current] = i;
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach((btn, idx) => {
+    btn.className = 'option-btn' + (idx === i ? ' selected' : '');
+    btn.querySelector('.option-icon').textContent = idx === i ? '✓' : questions[current].options[idx].icon;
+  });
+  // 選択後、少し間を置いて自動で次へ
+  setTimeout(() => nextQuestion(), 400);
+}
+
+function applyScore(qIdx, optIdx) {
+  const q = questions[qIdx];
+  const opt = q.options[optIdx];
+  if (q.parent) {
+    if (opt.parentScore) Object.entries(opt.parentScore).forEach(([k,v]) => parentScores[k] += v);
+  } else {
+    Object.entries(opt.scores).forEach(([k,v]) => childScores[k] += v);
+  }
+}
+
+function removeScore(qIdx, optIdx) {
+  const q = questions[qIdx];
+  const opt = q.options[optIdx];
+  if (q.parent) {
+    if (opt.parentScore) Object.entries(opt.parentScore).forEach(([k,v]) => parentScores[k] -= v);
+  } else {
+    Object.entries(opt.scores).forEach(([k,v]) => childScores[k] -= v);
+  }
+}
+
+function nextQuestion() {
+  if (answers[current] === undefined) return;
+  if (!appliedScores[current]) {
+    applyScore(current, answers[current]);
+    appliedScores[current] = true;
+  }
+  if (current < questions.length - 1) { current++; showQuestion(current); }
+  else showResult();
+}
+
+function prevQuestion() {
+  if (current > 0) {
+    if (appliedScores[current-1]) {
+      removeScore(current-1, answers[current-1]);
+      appliedScores[current-1] = false;
+    }
+    current--;
+    showQuestion(current);
+  }
+}
+
+function showResult() {
+  document.getElementById('screen-quiz').style.display = 'none';
+  document.getElementById('screen-result').style.display = 'block';
+  const childType = Object.entries(childScores).sort((a,b) => b[1]-a[1])[0][0];
+  const parentType = Object.entries(parentScores).sort((a,b) => b[1]-a[1])[0][0];
+  const ct = childTypes[childType] || childTypes['F'];
+  const pt = parentTypes[parentType] || parentTypes['Q'];
+  document.getElementById('r-emoji').textContent = ct.emoji;
+  document.getElementById('r-child-title').textContent = ct.title;
+  document.getElementById('r-child-sub').textContent = ct.sub;
+  document.getElementById('r-advice').textContent = ct.advice;
+  document.getElementById('r-parent-title').textContent = pt.title;
+  document.getElementById('r-parent-desc').textContent = pt.desc;
+  document.getElementById('r-strengths').innerHTML = ct.strengths.map(s => `<span class="tag">${s}</span>`).join('');
+  document.getElementById('r-tokui').innerHTML = ct.tokui.map(s => `<li>${s}</li>`).join('');
+  document.getElementById('r-nigate').innerHTML = ct.nigate.map(s => `<li>${s}</li>`).join('');
+  const card = document.getElementById('result-card');
+  card.style.display = 'block';
+  card.style.animation = 'none'; card.offsetHeight; card.style.animation = 'fadeUp 0.5s ease';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function resetQuiz() {
+  current = 0;
+  childScores = {A:0,B:0,C:0,D:0,E:0,F:0};
+  parentScores = {P:0,Q:0,R:0,S:0};
+  answers = []; appliedScores = [];
+  document.getElementById('screen-result').style.display = 'none';
+  document.getElementById('result-card').style.display = 'none';
+  document.getElementById('screen-start').style.display = 'block';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+</body>
+</html>

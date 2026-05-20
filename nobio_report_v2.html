@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>のびしろ 深掘りレポート</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#4a7c6f; --green-l:#7aab9a; --green-p:#e8f4f0;
+  --navy:#1a2e4a; --gold:#c9a84c; --gold-p:#fdf8ea;
+  --cream:#fdf8f2; --gray:#f4f7fb; --text:#2d2d2d; --sub:#6b7a8d;
+  --red:#c0724a; --red-p:#fff4ee; --blue:#3d7ab5; --blue-p:#eaf2fb;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--cream);color:var(--text);padding:0 0 40px;}
+
+/* 選択画面 */
+#screen-select{padding:20px 16px;}
+.select-header{background:linear-gradient(135deg,var(--green),var(--green-l));border-radius:16px;padding:24px 20px;text-align:center;margin-bottom:20px;}
+.select-header h1{font-family:'Noto Serif JP',serif;font-size:19px;color:white;font-weight:700;margin-bottom:6px;line-height:1.5;}
+.select-header p{font-size:12px;color:rgba(255,255,255,.8);line-height:1.7;}
+
+.select-card{background:white;border-radius:14px;padding:20px;margin-bottom:14px;box-shadow:0 2px 12px rgba(26,46,74,0.08);}
+.select-card h3{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--green-p);}
+.type-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.type-btn{background:var(--gray);border:2px solid transparent;border-radius:10px;padding:10px 8px;text-align:center;cursor:pointer;transition:all .2s;font-family:'Noto Sans JP',sans-serif;}
+.type-btn:hover{border-color:var(--green);background:var(--green-p);}
+.type-btn.active{border-color:var(--green);background:var(--green-p);}
+.type-btn .te{font-size:22px;margin-bottom:4px;}
+.type-btn .tn{font-size:11px;font-weight:700;color:var(--navy);}
+.type-btn .ts{font-size:10px;color:var(--sub);margin-top:2px;}
+
+.parent-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+
+.gen-btn{width:100%;background:var(--green);border:none;border-radius:12px;padding:16px;font-family:'Noto Sans JP',sans-serif;font-size:15px;font-weight:700;color:white;cursor:pointer;margin-top:4px;opacity:.5;pointer-events:none;transition:all .2s;}
+.gen-btn.ready{opacity:1;pointer-events:all;}
+.gen-btn.ready:hover{background:var(--green-l);}
+
+/* レポート画面 */
+#screen-report{display:none;padding:0 0 40px;}
+
+/* カバー */
+.cover{background:linear-gradient(135deg,var(--green),var(--green-l));padding:32px 20px;text-align:center;}
+.cover-badge{display:inline-block;background:rgba(255,255,255,.2);color:white;font-size:11px;font-weight:700;letter-spacing:1px;padding:5px 14px;border-radius:20px;margin-bottom:14px;}
+.cover h1{font-family:'Noto Serif JP',serif;font-size:22px;color:white;font-weight:700;line-height:1.5;margin-bottom:16px;}
+.cover-chips{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.chip{background:rgba(255,255,255,.15);border-radius:10px;padding:10px 16px;text-align:center;}
+.chip .cl{font-size:10px;color:rgba(255,255,255,.7);margin-bottom:2px;}
+.chip .cv{font-size:14px;font-weight:700;color:white;}
+.cover-catch{font-size:13px;color:var(--gold);font-weight:700;letter-spacing:1px;}
+
+/* セクション */
+.section{padding:20px 16px 0;}
+.sec-hdr{background:var(--navy);border-radius:12px;padding:12px 16px;margin-bottom:14px;}
+.sec-hdr h2{font-size:14px;font-weight:700;color:white;}
+
+/* ボックス */
+.box{border-radius:12px;padding:14px 16px;margin-bottom:12px;}
+.box-green{background:var(--green-p);border-left:4px solid var(--green);}
+.box-gold{background:var(--gold-p);border-left:4px solid var(--gold);}
+.box-red{background:var(--red-p);border-left:4px solid var(--red);}
+.box-blue{background:var(--blue-p);border-left:4px solid var(--blue);}
+.box-navy{background:var(--navy);border-radius:12px;padding:14px 16px;margin-bottom:12px;}
+.box-title{font-size:11px;font-weight:700;letter-spacing:.5px;margin-bottom:8px;}
+.box-green .box-title{color:var(--green);}
+.box-gold .box-title{color:var(--gold);}
+.box-red .box-title{color:var(--red);}
+.box-blue .box-title{color:var(--blue);}
+.box-navy .box-title{color:rgba(255,255,255,.7);}
+.box-body{font-size:13px;line-height:1.8;color:var(--text);}
+.box-navy .box-body{color:rgba(255,255,255,.9);}
+.box-body li{list-style:none;padding:3px 0;}
+
+/* グリッド */
+.sg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.sg-card{border-radius:10px;padding:12px;}
+.sg-card.s{background:var(--green-p);}
+.sg-card.n{background:var(--red-p);}
+.sg-card h4{font-size:11px;font-weight:700;margin-bottom:6px;}
+.sg-card.s h4{color:var(--green);}
+.sg-card.n h4{color:var(--red);}
+.sg-card p{font-size:11.5px;color:var(--text);line-height:1.7;}
+
+/* テーブル */
+.action-list{background:white;border-radius:12px;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.action-hdr{background:var(--navy);padding:10px 14px;font-size:11px;font-weight:700;color:white;}
+.action-item{display:flex;gap:10px;align-items:flex-start;padding:11px 14px;border-bottom:1px solid var(--green-p);}
+.action-item:last-child{border-bottom:none;}
+.action-num{width:24px;height:24px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0;margin-top:1px;}
+.action-text{font-size:12.5px;line-height:1.7;color:var(--text);}
+
+/* CTA */
+.cta{background:linear-gradient(135deg,#06c755,#00a040);border-radius:14px;padding:20px;text-align:center;margin:20px 16px 0;}
+.cta p{font-size:12px;color:rgba(255,255,255,.9);line-height:1.8;margin-bottom:12px;}
+.cta a{display:inline-flex;align-items:center;gap:8px;background:white;color:#06c755;font-weight:700;font-size:13px;padding:12px 24px;border-radius:10px;text-decoration:none;}
+
+.back-btn{display:block;background:white;border:2px solid var(--green-p);border-radius:10px;padding:12px;text-align:center;font-size:13px;color:var(--sub);cursor:pointer;margin:12px 16px 0;font-family:'Noto Sans JP',sans-serif;}
+
+.footer{text-align:center;font-size:11px;color:var(--sub);margin-top:20px;padding:0 16px;}
+</style>
+</head>
+<body>
+
+<!-- 選択画面 -->
+<div id="screen-select">
+  <div class="select-header">
+    <h1>のびしろ<br>深掘り分析レポート</h1>
+    <p>子×親＝無限の可能性<br>診断結果を入力してレポートを受け取ろう</p>
+  </div>
+
+  <div class="select-card">
+    <h3>🧒 お子さんのタイプを選択</h3>
+    <div class="type-grid" id="child-grid">
+      <div class="type-btn" onclick="selectChild('A',this)"><div class="te">⚡</div><div class="tn">チャレンジャー</div><div class="ts">タイプA</div></div>
+      <div class="type-btn" onclick="selectChild('B',this)"><div class="te">🔬</div><div class="tn">探求者</div><div class="ts">タイプB</div></div>
+      <div class="type-btn" onclick="selectChild('C',this)"><div class="te">🎨</div><div class="tn">クリエイター</div><div class="ts">タイプC</div></div>
+      <div class="type-btn" onclick="selectChild('D',this)"><div class="te">💚</div><div class="tn">共感者</div><div class="ts">タイプD</div></div>
+      <div class="type-btn" onclick="selectChild('E',this)"><div class="te">🌟</div><div class="tn">ビジョナリー</div><div class="ts">タイプE</div></div>
+      <div class="type-btn" onclick="selectChild('F',this)"><div class="te">🌱</div><div class="tn">堅実成長</div><div class="ts">タイプF</div></div>
+    </div>
+  </div>
+
+  <div class="select-card">
+    <h3>👨‍👩‍👧 あなたのタイプを選択</h3>
+    <div class="parent-grid" id="parent-grid">
+      <div class="type-btn" onclick="selectParent('P',this)"><div class="te">🏃</div><div class="tn">応援・伴走型</div><div class="ts">タイプP</div></div>
+      <div class="type-btn" onclick="selectParent('Q',this)"><div class="te">🤗</div><div class="tn">共感・受容型</div><div class="ts">タイプQ</div></div>
+      <div class="type-btn" onclick="selectParent('R',this)"><div class="te">🤝</div><div class="tn">連携・サポート型</div><div class="ts">タイプR</div></div>
+      <div class="type-btn" onclick="selectParent('S',this)"><div class="te">💡</div><div class="tn">自立・探求支援型</div><div class="ts">タイプS</div></div>
+    </div>
+  </div>
+
+  <button class="gen-btn" id="gen-btn" onclick="showReport()">レポートを見る 🌱</button>
+</div>
+
+<!-- レポート画面 -->
+<div id="screen-report">
+  <div class="cover">
+    <div class="cover-badge">のびしろ 深掘りレポート</div>
+    <h1 id="r-title">深掘り分析レポート</h1>
+    <div class="cover-chips">
+      <div class="chip"><div class="cl">お子さんのタイプ</div><div class="cv" id="r-child-chip"></div></div>
+      <div class="chip"><div class="cl">あなたのタイプ</div><div class="cv" id="r-parent-chip"></div></div>
+    </div>
+    <div class="cover-catch">子×親＝無限の可能性</div>
+  </div>
+
+  <!-- Part1 -->
+  <div class="section">
+    <div class="sec-hdr"><h2 id="r-p1-title">Part 1　お子さんの深掘り分析</h2></div>
+    <div class="box box-green">
+      <div class="box-title">このタイプとは</div>
+      <div class="box-body" id="r-child-desc"></div>
+    </div>
+    <div class="box box-gold">
+      <div class="box-title">✨ 一番輝く瞬間</div>
+      <div class="box-body" id="r-shine"></div>
+    </div>
+    <div class="sg-grid">
+      <div class="sg-card s"><h4>✅ 強み</h4><p id="r-strengths"></p></div>
+      <div class="sg-card n"><h4>🌱 苦手なこと</h4><p id="r-nigate"></p></div>
+    </div>
+    <div class="box box-green">
+      <div class="box-title">💬 今日から使える声かけ</div>
+      <div class="box-body" id="r-voice"></div>
+    </div>
+    <div class="box box-red">
+      <div class="box-title">❌ 言ってはいけない言葉</div>
+      <div class="box-body" id="r-ng"></div>
+    </div>
+  </div>
+
+  <!-- Part2 -->
+  <div class="section" style="margin-top:20px;">
+    <div class="sec-hdr"><h2>Part 2　あなたの子育てスタイル</h2></div>
+    <div class="box box-green">
+      <div class="box-title" id="r-parent-type-name"></div>
+      <div class="box-body" id="r-parent-desc"></div>
+    </div>
+    <div class="sg-grid">
+      <div class="sg-card s"><h4>✅ 強み</h4><p id="r-p-strength"></p></div>
+      <div class="sg-card n"><h4>⚠️ 盲点</h4><p id="r-p-blind"></p></div>
+    </div>
+    <div class="box box-blue">
+      <div class="box-title" id="r-baum-title"></div>
+      <div class="box-body" id="r-baum-body"></div>
+    </div>
+  </div>
+
+  <!-- Part3 -->
+  <div class="section" style="margin-top:20px;">
+    <div class="sec-hdr"><h2>Part 3　🌱 組み合わせ分析</h2></div>
+    <div class="box box-green">
+      <div class="box-title" id="r-combo-title"></div>
+      <div class="box-body" id="r-combo-body"></div>
+    </div>
+    <div class="action-list">
+      <div class="action-hdr">今週からできる具体的アクション</div>
+      <div id="r-actions"></div>
+    </div>
+    <div class="box box-gold">
+      <div class="box-title">🎯 3ヶ月後に目指す姿</div>
+      <div class="box-body" id="r-goal"></div>
+    </div>
+    <div class="box-navy">
+      <div class="box-title">📩 もっと詳しく相談したい方へ</div>
+      <div class="box-body">レポートを読んで「うちの子はどう対応すればいいか」を知りたい方は、次のアクションガイドへどうぞ。</div>
+    </div>
+  </div>
+
+  <div class="cta">
+    <p>「具体的に何をすればいい？」<br>お子さんの今の様子別に<br>対応方法を詳しく解説します</p>
+    <a href="action_guide_v2.html">📖 保護者アクションガイドを見る</a>
+  </div>
+
+  <button class="back-btn" onclick="goBack()">← 最初に戻る</button>
+  <div class="footer">のびしろ｜のびお先生　元小学校教員9年 / 教育コンサルタント<br>子×親＝無限の可能性</div>
+</div>
+
+<script>
+let selectedChild = null, selectedParent = null;
+
+const CHILD = {
+  A:{name:'チャレンジャータイプ',emoji:'⚡',desc:'エネルギッシュで行動力抜群。失敗を恐れず前に進む開拓者タイプです。',shine:'みんなの前で活躍・挑戦しているとき',strengths:'行動力・リーダーシップ・回復力・チャレンジ精神',nigate:'じっとして待つこと・細かいルールの遵守・感情を言葉にすること',voice:['「やってみていいよ」','「どうすればよかったと思う？」（失敗後に）','「エネルギーすごいね」'],ng:['「じっとしてなさい」「なんでできないの」','→ エネルギーを否定すると自己肯定感が下がります']},
+  B:{name:'探求者タイプ',emoji:'🔬',desc:'深く考え、論理的に物事を理解しようとする知的好奇心旺盛なタイプです。',shine:'「なぜ？」を深掘りして答えを見つけたとき',strengths:'論理的思考・集中力・分析力・粘り強さ',nigate:'曖昧な指示・急な予定変更・感情的な場面への対応',voice:['「なぜだろうね、一緒に調べてみよう」','「よく気づいたね」','「どうやって調べた？」'],ng:['「なんでわかんないの」「理由なんてない」','→ 論理を否定されると学校への不信感につながります']},
+  C:{name:'クリエイタータイプ',emoji:'🎨',desc:'独自の感性と世界観を持つ、自分らしさを大切にする表現者タイプです。',shine:'自分だけの作品を作り上げたとき',strengths:'創造力・感性の豊かさ・独自性・表現力',nigate:'集団での一斉行動・人前での発表・画一的なルール',voice:['「あなたらしいね」','「どんな気持ちで作ったの？」','「面白い発想だね」'],ng:['「みんなと同じにしなさい」「そんなの意味ない」','→ 個性を否定すると表現することへの恐れが生まれます']},
+  D:{name:'共感者タイプ',emoji:'💚',desc:'人の気持ちに敏感で、思いやりと絆を大切にする温かい子です。',shine:'誰かの役に立てていると感じたとき',strengths:'共感力・思いやり・協調性・信頼関係を築く力',nigate:'競争・勝負ごと・一人での長時間作業・人間関係のトラブル',voice:['「そう感じたんだね」','「一緒にいるよ」','「あなたの優しさが好きだよ」'],ng:['「気にしすぎ」「そんなことで」','→ 感情を軽視されると誰にも言えなくなります']},
+  E:{name:'ビジョナリータイプ',emoji:'🌟',desc:'大きな夢と理想を持ち、自分なりの世界観でまわりを動かす先駆者タイプです。',shine:'大きなビジョンを語り、人が動いたとき',strengths:'理想を描く力・カリスマ性・発想力・人を巻き込む力',nigate:'細かい作業の継続・現実的な計画の実行・批判への対応',voice:['「その夢、面白いね」','「どうすれば実現できるかな？」','「大きいビジョンだね」'],ng:['「現実を見なさい」「そんなの無理」','→ 夢を否定されると一気に意欲を失います']},
+  F:{name:'堅実成長タイプ',emoji:'🌱',desc:'コツコツ積み上げることが得意で、安定した環境で着実に伸びるタイプです。',shine:'コツコツ続けてきたことが形になったとき',strengths:'継続力・誠実さ・責任感・丁寧さ',nigate:'急な変化への対応・プレッシャーのかかる場面・他者との比較',voice:['「昨日より進んだね」','「あなたのペースでいい」','「コツコツ続けてるね」'],ng:['「まだできないの？」「〇〇ちゃんはできてるのに」','→ 比較と焦りが最大のストレスになります']},
+};
+
+const PARENT = {
+  P:{name:'応援・伴走型',desc:'子どもの挑戦を後押しし、一緒に走ることを大切にするタイプ。子どもの可能性を信じる力が強い。',strength:'子どものやる気を引き出すのが得意',blind:'先回りしすぎて子どもの自立を妨げることがある',baum_title:'権威型（民主的）に近いスタイル',baum:'バウムリンド博士（1966年）の研究で「最も子どもの成長に良い」とされるスタイルに近い関わり方です。温かさと適切な期待のバランスが取れています。'},
+  Q:{name:'共感・受容型',desc:'子どもの気持ちに寄り添い、感情を大切にするタイプ。安心できる関係を作るのが得意。',strength:'子どもが本音を話せる関係を作れる',blind:'受け入れすぎて次のステップへの後押しが遅れることがある',baum_title:'愛着理論の「安全基地」型',baum:'ボウルビィの愛着理論（1969年）における「安全基地」の提供者です。子どもが安心して探索できる環境を作るのが得意なタイプです。'},
+  R:{name:'連携・サポート型',desc:'学校や周りと協力して子どもを育てることを大切にするタイプ。チームで支える力が強い。',strength:'外部のリソースを上手に活用できる',blind:'子どもと二人で向き合う時間が少なくなることがある',baum_title:'権威型×チームアプローチ',baum:'バウムリンド理論の権威型をベースに、外部リソースを活用するスタイルです。一人で抱えず、チームで子育てする現代的なアプローチです。'},
+  S:{name:'自立・探求支援型',desc:'子どもが自分で考え、決めることを尊重するタイプ。主体性を育てる力が高い。',strength:'子どもの自律心・主体性を育てるのが得意',blind:'感情面へのサポートが手薄になることがある',baum_title:'自己決定理論（デシ&ライアン 1985年）に近いスタイル',baum:'子どもの内発的動機を育てる、最も主体性を引き出しやすい関わり方です。「自分でやりたい」という気持ちを大切にするスタイルです。'},
+};
+
+const COMBO = {
+  AQ:{title:'行動と感情のバランスが鍵',body:'突き進むお子さんに対して、親御さんの共感力が安全基地になります。失敗したとき「つらかったね」と受け止めてから「次どうする？」と問いかけると、回復力がより強くなります。',actions:['失敗後は「つらかったね」と先に共感する','「次どうする？」は共感の後に聞く','エネルギーが高い時は一緒に体を動かす','「やってみていいよ」を増やす']},
+  AP:{title:'エネルギーを共に走る最強コンビ',body:'お子さんのチャレンジ精神と親御さんの伴走力が合わさると、大きな挑戦も恐れずに進めます。ただし一緒に走りすぎると疲弊することも。「見守る時間」を意識的に作ることで自立心がさらに育ちます。',actions:['毎朝「今日は何に挑戦したい？」と聞く','挑戦した結果を全力で褒める','週1回「見守る日」を作って口出しを控える','失敗を責めず「次はどうする？」と聞く']},
+  AR:{title:'外の世界とつなぐ橋渡し役',body:'エネルギッシュなお子さんには、外のフィールドで活躍する場が大切です。学校・地域・習い事など、挑戦できる舞台を一緒に探してあげてください。',actions:['挑戦できる習い事・活動を一緒に探す','学校外のコミュニティとつなぐ','先生・指導者と連携して背中を押してもらう','挑戦の機会を意識的に作る']},
+  AS:{title:'自分で決める力を育む最強コンビ',body:'行動力のあるお子さんが自分で判断できるようになると、無限の可能性が広がります。失敗しても「どうしたらよかったと思う？」と問いかけるだけで、自己解決力が育ちます。',actions:['「どうしたい？」と先に子どもに聞く','失敗後「どうすればよかったと思う？」と問いかける','答えを教えずに考える時間を与える','選択肢を2つ提示して子どもに選ばせる']},
+  BQ:{title:'論理と感情の橋をかける関係',body:'分析型のお子さんは感情を後回しにしがちです。「どう思った？」という問いかけを日常に取り入れることで、知的能力に感情の豊かさが加わります。',actions:['「どう思った？」を1日1回聞く習慣をつける','知識の話だけでなく気持ちの話もする時間を作る','「正解がない問い」を一緒に考える','「そう感じたんだね」を使う']},
+  BP:{title:'知的探求を一緒に楽しむ',body:'「なぜ？」を大切にするお子さんに、親御さんが「一緒に調べよう」と伴走すると信頼関係が深まります。答えを教えるより、答えを探す過程を共有することが大切です。',actions:['「一緒に調べてみよう」と言う','「なぜだろうね？」と問い返す','図書館・博物館に一緒に行く','「よく気づいたね」を口癖にする']},
+  BR:{title:'専門家との連携で可能性を広げる',body:'知識欲の高いお子さんには、学校以外の学びの場とつなぐことが効果的です。親御さんの連携力を活かしてください。',actions:['図書館・博物館・専門講座とつなぐ','先生に子どもの得意分野を伝える','興味に合った本・動画を一緒に探す','外部の専門家に触れる機会を作る']},
+  BS:{title:'自分で調べる力を最大化する',body:'「なぜ？」を自分で解決しようとする力が育つと、このタイプは驚くほど伸びます。答えを与えずに「どこで調べられそう？」と問いかけるだけでOKです。',actions:['答えを教えずに「どこで調べる？」と聞く','自分で仮説を立てさせる','「どうやって確かめる？」と問いかける','調べた結果を発表する場を作る']},
+  CQ:{title:'感性を全力で受け止める関係',body:'「あなたらしいね」という言葉がこのタイプの子に一番響きます。どんな表現も否定せずに受け止めることが最大のサポートです。',actions:['作品を見て「どんな気持ちで作ったの？」と聞く','「あなたらしいね」を毎日1回言う','否定せずにまず「いいね」と言う','表現の機会を日常に作る']},
+  CP:{title:'表現の舞台を一緒に作る',body:'クリエイティブなお子さんには、作品を発表できる場が力になります。「見せてよ」より「どんな気持ちで作ったの？」が自己肯定感を育てます。',actions:['作品を「見せてよ」と積極的に求める','「どんな気持ちで作ったの？」と聞く','作品を飾ったり記録したりする','発表の場を一緒に作る']},
+  CR:{title:'表現の場を外の世界に広げる',body:'芸術・工作・音楽など、子どもの表現に合った外部の場とつなぐことで才能が開花します。',actions:['表現系の習い事・ワークショップを探す','学校外の発表の場とつなぐ','先生に子どもの創造性を伝える','地域のアート活動とつなぐ']},
+  CS:{title:'自分で選ぶ表現の自由',body:'「何を作りたい？」「どんな風にしたい？」と選択肢を子どもに委ねることで、独自の世界観がより豊かに育ちます。',actions:['「何を作りたい？」と先に聞く','テーマを自分で決めさせる','完成した作品について「どう思う？」と聞く','次の作品のアイデアを自分で考えさせる']},
+  DQ:{title:'安心の最強コンビ',body:'感受性豊かなお子さんに、受容力の高い親御さんが寄り添う最高の組み合わせです。「そう感じたんだね」という言葉を日常的に使うことで、自己肯定感の土台が育ちます。',actions:['「そう感じたんだね」を今日から使う','「一緒にいるよ」を毎日伝える','「あなたはどうしたかった？」と自分の気持ちに目を向けさせる','自分の時間も大切にさせる']},
+  DP:{title:'一緒に走る温かい関係',body:'人の気持ちを大切にするお子さんと、伴走する親御さんの組み合わせは温かい関係を作ります。「友達はどうだった？」と相手への関心も引き出すと、共感力がさらに深まります。',actions:['一緒に人助けの体験をする','「友達はどうだった？」と聞く','感謝を言葉にする機会を作る','相手の立場で考える問いかけをする']},
+  DR:{title:'人とのつながりを広げる',body:'友達・仲間を大切にするお子さんに、外の人間関係とつなぐサポートが効果的です。',actions:['コミュニティ・習い事・地域活動を探す','安心できる友達グループとつなぐ','学校の先生と連携して見守る','地域の人との交流機会を作る']},
+  DS:{title:'自分の気持ちを大切にする力',body:'他者への共感が強いこのタイプは、自分の気持ちを後回しにしがちです。「あなたはどうしたかった？」と自分の感情に目を向ける問いかけが、主体性を育てます。',actions:['「あなたはどうしたかった？」を口癖にする','自分の意見を言う練習をする','「あなたが嫌なら嫌でいい」と伝える','自分の選択を尊重する場面を作る']},
+  EQ:{title:'夢と感情を両方大切にする',body:'理想を語るお子さんの気持ちを「そうしたいんだね」と受け止めてから「どう思う？」と深掘りすることで、感情と思考のバランスが育ちます。',actions:['「そうしたいんだね」と先に受け止める','夢を否定せずに「どうすれば？」と聞く','感情の言語化を日常に取り入れる','小さな夢から一緒に実現する']},
+  EP:{title:'夢を一緒に追う関係',body:'大きなビジョンを持つお子さんと、伴走する親御さんのコンビは最強です。「それ面白いね、どうすれば実現できるかな？」という問いかけが夢を現実に近づけます。',actions:['「それ面白いね」と夢を肯定する','「どうすれば実現できるかな？」と問いかける','夢を紙に書いて貼る','小さな一歩を一緒に踏み出す']},
+  ER:{title:'夢を実現する環境を作る',body:'大きなビジョンには、それを実現するネットワークが必要です。親御さんの連携力を活かして、メンター・コミュニティ・機会とつなぐことが力になります。',actions:['ロールモデルとなる大人とつなぐ','夢に関連するコミュニティを探す','体験・インターンシップの機会を探す','夢を話せる場所を作る']},
+  ES:{title:'自分で道を切り開く力',body:'夢を自分で実現する力を育てるのに最適な組み合わせです。「どうすればできると思う？」という問いかけを繰り返すことで、実行力と計画力が育ちます。',actions:['「どうすればできると思う？」と問いかける','計画を自分で立てさせる','実行した結果を振り返る習慣をつける','「あなたならできる」と信じて待つ']},
+  FQ:{title:'安心の中でゆっくり育つ',body:'安定した環境でこそ力を発揮するお子さんに、受容力の高い親御さんの存在は最高の安全基地です。「あなたのペースでいい」という言葉を毎日伝えてください。',actions:['「あなたのペースでいい」を毎日伝える','「昨日より進んだね」と変化を言葉にする','比較せずにそのままを認める','「大好きだよ」を毎日言う']},
+  FP:{title:'小さな一歩を一緒に踏み出す',body:'コツコツ型のお子さんには、焦らずに一緒に歩む伴走者が最高のサポートです。「昨日より進んだね」という言葉が最大の励みになります。',actions:['「昨日より進んだね」を口癖にする','小さな目標を一緒に決める','達成したらしっかり褒める','焦らせずに見守る']},
+  FR:{title:'着実に積み上げる環境を作る',body:'コツコツ継続できる習い事・学習環境とつなぐことが力になります。無理のないペースで続けられる場を一緒に探してあげてください。',actions:['継続しやすい習い事を一緒に探す','学校の先生と進捗を共有する','無理のないペースで続けられる環境を整える','継続した期間を見える化する']},
+  FS:{title:'自分で決めて積み上げる力',body:'「次は何をやってみたい？」と自分で選ぶ機会を作ることで、主体的に継続する力が育ちます。小さな目標を自分で設定できるようになると、飛躍的に伸びます。',actions:['「次は何をやってみたい？」と聞く','目標を自分で決めさせる','「どのくらいでできそう？」と自分で計画させる','達成したら「自分で決めてやり遂げたね」と伝える']},
+};
+
+const GOAL = {
+  A:'「失敗してもまたやってみよう」と自分で立ち上がれる子',
+  B:'「なぜ？」を自分で調べて答えを見つけられる子',
+  C:'「これが自分らしい」と誇りを持って表現できる子',
+  D:'「自分の気持ちも大切」と言えるようになった子',
+  E:'夢を語るだけでなく「まず何をする？」と動き始めた子',
+  F:'「昨日の自分より進んだ」と感じられる子',
+};
+
+function selectChild(type, el) {
+  document.querySelectorAll('#child-grid .type-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  selectedChild = type;
+  checkReady();
+}
+
+function selectParent(type, el) {
+  document.querySelectorAll('#parent-grid .type-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  selectedParent = type;
+  checkReady();
+}
+
+function checkReady() {
+  const btn = document.getElementById('gen-btn');
+  if (selectedChild && selectedParent) btn.classList.add('ready');
+  else btn.classList.remove('ready');
+}
+
+function showReport() {
+  if (!selectedChild || !selectedParent) return;
+  const ct = CHILD[selectedChild];
+  const pt = PARENT[selectedParent];
+  const key = selectedChild + selectedParent;
+  const combo = COMBO[key] || {
+    title: `${ct.name}×${pt.name}の関わり方`,
+    body: `お子さんの${ct.name}の特性を活かすために、${pt.name}の強みである「${pt.strength}」を活かした関わりが効果的です。`,
+    actions: ['毎朝「今日の気持ちは何点？」と聞く','今日できたことを1つ寝る前に確認する','「あなたのことが大好きだよ」を今日伝える','お子さんのペースに合わせて焦らず進む']
+  };
+
+  // セット
+  document.getElementById('r-title').textContent = `${ct.emoji} ${ct.name}\n×\n${pt.name}`;
+  document.getElementById('r-child-chip').textContent = `${ct.emoji} ${ct.name}`;
+  document.getElementById('r-parent-chip').textContent = pt.name;
+  document.getElementById('r-p1-title').textContent = `Part 1　${ct.emoji} お子さんの深掘り分析`;
+  document.getElementById('r-child-desc').textContent = ct.desc;
+  document.getElementById('r-shine').textContent = ct.shine;
+  document.getElementById('r-strengths').textContent = ct.strengths.split('・').map(s=>`・${s}`).join('\n');
+  document.getElementById('r-nigate').textContent = ct.nigate.split('・').map(s=>`・${s}`).join('\n');
+  document.getElementById('r-voice').innerHTML = ct.voice.map(v=>`<li>${v}</li>`).join('');
+  document.getElementById('r-ng').innerHTML = ct.ng.map(n=>`<li>${n}</li>`).join('');
+  document.getElementById('r-parent-type-name').textContent = pt.name;
+  document.getElementById('r-parent-desc').textContent = pt.desc;
+  document.getElementById('r-p-strength').textContent = pt.strength;
+  document.getElementById('r-p-blind').textContent = pt.blind;
+  document.getElementById('r-baum-title').textContent = `📚 ${pt.baum_title}`;
+  document.getElementById('r-baum-body').textContent = pt.baum;
+  document.getElementById('r-combo-title').textContent = `✨ ${combo.title}`;
+  document.getElementById('r-combo-body').textContent = combo.body;
+  document.getElementById('r-actions').innerHTML = combo.actions.map((a,i)=>`
+    <div class="action-item">
+      <div class="action-num">${i+1}</div>
+      <div class="action-text">${a}</div>
+    </div>`).join('');
+  document.getElementById('r-goal').textContent = GOAL[selectedChild];
+
+  document.getElementById('screen-select').style.display = 'none';
+  document.getElementById('screen-report').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+function goBack() {
+  document.getElementById('screen-report').style.display = 'none';
+  document.getElementById('screen-select').style.display = 'block';
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>

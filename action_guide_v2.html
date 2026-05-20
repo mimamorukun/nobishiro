@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>子どもの姿別 保護者アクションガイド｜のびしろ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #4a7c6f;
+  --green-light: #7aab9a;
+  --green-pale: #e8f4f0;
+  --navy: #1a2e4a;
+  --gold: #c9a84c;
+  --gold-pale: #fdf8ea;
+  --cream: #fdf8f2;
+  --text: #2d2d2d;
+  --text-light: #6b7a8d;
+  --red-pale: #fff4ee;
+  --red: #c0724a;
+  --blue-pale: #eaf2fb;
+  --blue: #3d7ab5;
+  --purple-pale: #f5f0ff;
+  --purple: #7b5cb8;
+  --white: #ffffff;
+  --shadow: 0 4px 20px rgba(26,46,74,0.10);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:'Noto Sans JP',sans-serif;
+  background:var(--cream);
+  color:var(--text);
+  padding:20px 16px 40px;
+  max-width:680px;
+  margin:0 auto;
+  font-size:14px;
+}
+
+/* Header */
+.header {
+  background:linear-gradient(135deg,var(--green),var(--green-light));
+  border-radius:16px;
+  padding:24px 20px;
+  text-align:center;
+  margin-bottom:20px;
+}
+.header h1 {
+  font-family:'Noto Serif JP',serif;
+  font-size:18px;
+  color:white;
+  font-weight:700;
+  line-height:1.6;
+  margin-bottom:6px;
+}
+.header p { font-size:12px; color:rgba(255,255,255,.85); line-height:1.7; }
+.header .catch { font-size:11px; color:var(--gold); font-weight:700; letter-spacing:1px; margin-top:8px; }
+
+/* Intro */
+.intro {
+  background:white;
+  border-radius:14px;
+  padding:16px 18px;
+  margin-bottom:20px;
+  box-shadow:var(--shadow);
+  font-size:13px;
+  line-height:1.9;
+  color:var(--text-light);
+  border-left:4px solid var(--gold);
+}
+.intro strong { color:var(--navy); }
+
+/* 樹形図全体 */
+.tree { position:relative; }
+
+/* ルートノード */
+.root-node {
+  background:var(--navy);
+  border-radius:14px;
+  padding:16px 20px;
+  text-align:center;
+  margin-bottom:0;
+  position:relative;
+  z-index:2;
+}
+.root-node h2 {
+  font-family:'Noto Serif JP',serif;
+  font-size:16px;
+  color:white;
+  font-weight:700;
+  margin-bottom:4px;
+}
+.root-node p { font-size:11px; color:rgba(255,255,255,.7); }
+
+.connector-down {
+  width:2px;
+  background:var(--green-light);
+  margin:0 auto;
+  height:20px;
+}
+.connector-row {
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  gap:0;
+  position:relative;
+  margin-bottom:0;
+}
+.connector-row::before {
+  content:'';
+  position:absolute;
+  top:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:calc(100% - 60px);
+  height:2px;
+  background:var(--green-light);
+}
+.branch {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:0 4px;
+  position:relative;
+}
+.branch::before {
+  content:'';
+  width:2px;
+  height:18px;
+  background:var(--green-light);
+  display:block;
+}
+
+/* 子どもの姿カード */
+.child-card {
+  border-radius:12px;
+  padding:12px 14px;
+  text-align:center;
+  cursor:pointer;
+  transition:all .25s;
+  width:100%;
+  border:2px solid transparent;
+  position:relative;
+}
+.child-card:hover { transform:translateY(-2px); }
+.child-card.active { border-color:var(--green); box-shadow:0 6px 20px rgba(74,124,111,.2); }
+.child-card .emoji { font-size:24px; margin-bottom:6px; display:block; }
+.child-card .label {
+  font-size:11px;
+  font-weight:700;
+  color:var(--text-light);
+  letter-spacing:.5px;
+  margin-bottom:4px;
+}
+.child-card .title {
+  font-family:'Noto Serif JP',serif;
+  font-size:12px;
+  font-weight:700;
+  line-height:1.5;
+  color:var(--navy);
+}
+.child-card .sign {
+  font-size:10px;
+  color:var(--text-light);
+  line-height:1.6;
+  margin-top:5px;
+}
+
+.type-a { background:#fff0f0; }
+.type-b { background:#fff8e8; }
+.type-c { background:#f0f4ff; }
+.type-d { background:var(--green-pale); }
+.type-e { background:#f5f0ff; }
+
+/* アクションパネル */
+.action-panel {
+  display:none;
+  background:white;
+  border-radius:14px;
+  padding:20px;
+  margin-top:16px;
+  box-shadow:var(--shadow);
+  animation:fadeUp .35s ease;
+}
+.action-panel.show { display:block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+.panel-header {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:16px;
+  padding-bottom:12px;
+  border-bottom:2px solid var(--green-pale);
+}
+.panel-emoji { font-size:32px; }
+.panel-title h3 {
+  font-family:'Noto Serif JP',serif;
+  font-size:16px;
+  font-weight:700;
+  color:var(--navy);
+  margin-bottom:3px;
+}
+.panel-title p { font-size:11px; color:var(--text-light); line-height:1.6; }
+
+/* セクションタイトル */
+.section-title {
+  font-family:'Noto Serif JP',serif;
+  font-size:13px;
+  font-weight:700;
+  color:var(--navy);
+  padding:14px 0 8px;
+  margin-top:14px;
+  border-bottom:2px solid var(--green-pale);
+  margin-bottom:12px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+/* 各種ボックス */
+.box {
+  border-radius:10px;
+  padding:14px 16px;
+  margin-bottom:12px;
+}
+.box-green {
+  background:var(--green-pale);
+  border-left:4px solid var(--green);
+}
+.box-gold {
+  background:var(--gold-pale);
+  border-left:4px solid var(--gold);
+}
+.box-red {
+  background:var(--red-pale);
+  border-left:4px solid var(--red);
+}
+.box-blue {
+  background:var(--blue-pale);
+  border-left:4px solid var(--blue);
+}
+.box-purple {
+  background:var(--purple-pale);
+  border-left:4px solid var(--purple);
+}
+
+.box-label {
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:1px;
+  margin-bottom:6px;
+}
+.box-green .box-label { color:var(--green); }
+.box-gold .box-label { color:var(--gold); }
+.box-red .box-label { color:var(--red); }
+.box-blue .box-label { color:var(--blue); }
+.box-purple .box-label { color:var(--purple); }
+
+.box-title {
+  font-size:13px;
+  font-weight:700;
+  color:var(--navy);
+  margin-bottom:8px;
+  line-height:1.5;
+}
+.box-body {
+  font-size:12.5px;
+  line-height:1.85;
+  color:var(--text);
+}
+
+/* 目指す姿 */
+.vision-box {
+  background:var(--green-pale);
+  border-left:4px solid var(--green);
+  border-radius:0 10px 10px 0;
+  padding:14px 16px;
+  margin-bottom:14px;
+}
+.vision-box .vt { font-size:10px; font-weight:700; color:var(--green); letter-spacing:1px; margin-bottom:6px; }
+.vision-box .vc { font-size:13.5px; font-weight:700; color:var(--navy); line-height:1.7; }
+
+/* アクションリスト */
+.action-item {
+  background:var(--cream);
+  border-radius:10px;
+  padding:14px 16px;
+  margin-bottom:10px;
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+}
+.action-num {
+  width:28px;
+  height:28px;
+  background:var(--green);
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+  font-weight:700;
+  color:white;
+  flex-shrink:0;
+  margin-top:1px;
+}
+.action-content { flex:1; }
+.action-content .act { font-size:13.5px; font-weight:700; color:var(--navy); margin-bottom:5px; line-height:1.5; }
+.action-content .how { font-size:12px; color:var(--text-light); line-height:1.85; margin-bottom:6px; }
+.action-content .example {
+  background:white;
+  border:1px solid #e8eef5;
+  border-radius:8px;
+  padding:10px 12px;
+  margin-top:8px;
+  font-size:11.5px;
+  line-height:1.85;
+  color:var(--text);
+}
+.example-label { font-size:10px; font-weight:700; color:var(--green); margin-bottom:4px; }
+.example-label.red { color:var(--red); }
+.example-label.blue { color:var(--blue); }
+
+/* なぜ？セクション */
+.why-card {
+  background:linear-gradient(135deg,#fdf8ea,#fffdf5);
+  border-radius:12px;
+  padding:14px 16px;
+  margin-bottom:14px;
+  border:1px solid #f0e6c2;
+}
+.why-card .why-title {
+  font-family:'Noto Serif JP',serif;
+  font-size:13px;
+  font-weight:700;
+  color:var(--gold);
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.why-card .why-body { font-size:12.5px; line-height:1.85; color:var(--text); }
+
+/* 研究データ */
+.research-card {
+  background:white;
+  border:1px solid #d8e0ea;
+  border-radius:10px;
+  padding:12px 14px;
+  margin-bottom:10px;
+}
+.research-card .rt {
+  font-size:10px;
+  color:var(--blue);
+  font-weight:700;
+  letter-spacing:.5px;
+  margin-bottom:4px;
+  display:flex;
+  align-items:center;
+  gap:4px;
+}
+.research-card .rb { font-size:12px; line-height:1.8; color:var(--text); }
+
+/* タイムライン */
+.timeline {
+  position:relative;
+  padding-left:24px;
+  margin-bottom:14px;
+}
+.timeline::before {
+  content:'';
+  position:absolute;
+  left:8px;
+  top:0;
+  bottom:0;
+  width:2px;
+  background:var(--green-light);
+}
+.timeline-item {
+  position:relative;
+  margin-bottom:14px;
+}
+.timeline-item::before {
+  content:'';
+  position:absolute;
+  left:-22px;
+  top:6px;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--green);
+  border:2px solid white;
+  box-shadow:0 0 0 2px var(--green);
+}
+.timeline-stage {
+  font-size:10px;
+  font-weight:700;
+  color:var(--green);
+  letter-spacing:1px;
+  margin-bottom:3px;
+}
+.timeline-title {
+  font-size:13px;
+  font-weight:700;
+  color:var(--navy);
+  margin-bottom:4px;
+}
+.timeline-body {
+  font-size:11.5px;
+  color:var(--text-light);
+  line-height:1.8;
+}
+
+/* チェックリスト */
+.checklist {
+  background:var(--blue-pale);
+  border-radius:10px;
+  padding:14px 16px;
+  margin-bottom:12px;
+}
+.checklist-title {
+  font-size:11px;
+  font-weight:700;
+  color:var(--blue);
+  letter-spacing:1px;
+  margin-bottom:10px;
+}
+.check-item {
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  padding:6px 0;
+  font-size:12.5px;
+  line-height:1.7;
+  color:var(--text);
+}
+.check-box {
+  width:18px;
+  height:18px;
+  border:2px solid var(--blue);
+  border-radius:4px;
+  flex-shrink:0;
+  margin-top:1px;
+  background:white;
+}
+
+/* NGリスト */
+.ng-list {
+  list-style:none;
+  padding:0;
+}
+.ng-list li {
+  position:relative;
+  padding:6px 0 6px 24px;
+  font-size:12px;
+  line-height:1.8;
+  color:var(--text);
+}
+.ng-list li::before {
+  content:'❌';
+  position:absolute;
+  left:0;
+  top:6px;
+  font-size:11px;
+}
+
+/* OKリスト */
+.ok-list {
+  list-style:none;
+  padding:0;
+}
+.ok-list li {
+  position:relative;
+  padding:6px 0 6px 24px;
+  font-size:12px;
+  line-height:1.8;
+  color:var(--text);
+}
+.ok-list li::before {
+  content:'✅';
+  position:absolute;
+  left:0;
+  top:6px;
+  font-size:11px;
+}
+
+/* 専門家サイン */
+.expert-box {
+  background:var(--blue-pale);
+  border-radius:10px;
+  padding:14px 16px;
+  margin-top:12px;
+  border:1px solid var(--blue);
+}
+.expert-box .et {
+  font-size:11px;
+  font-weight:700;
+  color:var(--blue);
+  margin-bottom:8px;
+  letter-spacing:.5px;
+}
+.expert-box ul {
+  list-style:none;
+  padding:0;
+}
+.expert-box li {
+  font-size:12px;
+  line-height:1.8;
+  color:var(--text);
+  padding:2px 0 2px 16px;
+  position:relative;
+}
+.expert-box li::before {
+  content:'•';
+  position:absolute;
+  left:4px;
+  color:var(--blue);
+  font-weight:700;
+}
+
+/* CTAボックス（次のステップへの誘導） */
+.next-cta {
+  background:linear-gradient(135deg, var(--navy), #2d4a6e);
+  border-radius:14px;
+  padding:20px;
+  margin-top:20px;
+  text-align:center;
+}
+.next-cta-label {
+  display:inline-block;
+  background:var(--gold);
+  color:white;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:1px;
+  padding:4px 12px;
+  border-radius:12px;
+  margin-bottom:10px;
+}
+.next-cta h4 {
+  font-family:'Noto Serif JP',serif;
+  font-size:15px;
+  color:white;
+  font-weight:700;
+  margin-bottom:8px;
+  line-height:1.6;
+}
+.next-cta p {
+  font-size:12px;
+  color:rgba(255,255,255,.8);
+  margin-bottom:14px;
+  line-height:1.8;
+}
+.next-cta-btn {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:linear-gradient(135deg,#06c755,#00a040);
+  color:white;
+  font-weight:700;
+  font-size:13px;
+  padding:12px 24px;
+  border-radius:10px;
+  text-decoration:none;
+}
+
+/* 引用 */
+.quote {
+  border-left:3px solid var(--green-light);
+  padding:8px 14px;
+  margin:10px 0;
+  font-size:12px;
+  font-style:italic;
+  color:var(--text-light);
+  line-height:1.8;
+}
+
+/* フッター */
+.footer {
+  text-align:center;
+  font-size:11px;
+  color:var(--text-light);
+  margin-top:24px;
+  padding-top:16px;
+  border-top:1px solid #e8eef5;
+}
+
+/* モバイル対応 */
+@media(max-width:480px) {
+  .branch { padding:0 2px; }
+  .child-card { padding:10px 8px; }
+  .child-card .emoji { font-size:20px; }
+  .child-card .title { font-size:11px; }
+  .child-card .sign { display:none; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>子どもの姿でわかる<br>保護者アクションガイド</h1>
+  <p>今のお子さんの様子を選ぶと<br>具体的な対応方法が表示されます</p>
+  <div class="catch">子×親＝無限の可能性</div>
+</div>
+
+<div class="intro">
+  <strong>このガイドの使い方</strong><br>
+  お子さんの「今の姿」に近いものをタップしてください。<br>
+  原因の解説・今日からできるアクション・専門家が必要なケースまで<br>
+  徹底的に解説します。<br>
+  ※研究データに基づいて作成しています。
+</div>
+
+<!-- 樹形図 -->
+<div class="tree">
+  <div class="root-node">
+    <h2>🌱 今、お子さんはどんな様子ですか？</h2>
+    <p>一番近いものをタップしてください</p>
+  </div>
+  <div class="connector-down"></div>
+
+  <div class="connector-row">
+    <div class="branch">
+      <div class="child-card type-a" onclick="showPanel('a',this)">
+        <span class="emoji">😰</span>
+        <div class="label">タイプA</div>
+        <div class="title">学校に<br>行きたくない</div>
+        <div class="sign">朝になると<br>体調不良・泣く</div>
+      </div>
+    </div>
+    <div class="branch">
+      <div class="child-card type-b" onclick="showPanel('b',this)">
+        <span class="emoji">😶</span>
+        <div class="label">タイプB</div>
+        <div class="title">何もしたく<br>ない・無気力</div>
+        <div class="sign">部屋に閉じこもり<br>会話が減った</div>
+      </div>
+    </div>
+    <div class="branch">
+      <div class="child-card type-c" onclick="showPanel('c',this)">
+        <span class="emoji">😠</span>
+        <div class="label">タイプC</div>
+        <div class="title">怒りやすい<br>・反抗的</div>
+        <div class="sign">すぐキレる<br>暴言・物を壊す</div>
+      </div>
+    </div>
+    <div class="branch">
+      <div class="child-card type-d" onclick="showPanel('d',this)">
+        <span class="emoji">😔</span>
+        <div class="label">タイプD</div>
+        <div class="title">自分を<br>責めている</div>
+        <div class="sign">「どうせダメ」<br>「消えたい」</div>
+      </div>
+    </div>
+    <div class="branch">
+      <div class="child-card type-e" onclick="showPanel('e',this)">
+        <span class="emoji">🌀</span>
+        <div class="label">タイプE</div>
+        <div class="title">回復してきた<br>・次のステップ</div>
+        <div class="sign">少し外に出た<br>話すようになった</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== タイプA ========== -->
+<div class="action-panel" id="panel-a">
+  <div class="panel-header">
+    <div class="panel-emoji">😰</div>
+    <div class="panel-title">
+      <h3>タイプA｜学校に行きたくない</h3>
+      <p>朝になると体調不良・泣く・玄関で固まる</p>
+    </div>
+  </div>
+
+  <!-- なぜこうなるのか -->
+  <div class="section-title">🔍 なぜこうなるのか</div>
+  <div class="why-card">
+    <div class="why-title">📚 子どもの体に起きていること</div>
+    <div class="why-body">
+      子どもが「学校に行きたくない」と感じるとき、頭の中だけでなく<strong>体にも実際の反応</strong>が起きています。<br><br>
+      不安を感じると脳から自律神経を通じて腸に信号が送られ、本当に腹痛・吐き気・頭痛が起こります。これを<strong>「脳腸相関」</strong>といい、ハーバード大学医学部の研究でも実証されています。<br><br>
+      つまり「仮病」ではなく、子どもの体が「ここは危険」と判断して防衛反応を起こしているのです。
+    </div>
+  </div>
+
+  <div class="research-card">
+    <div class="rt">📊 研究データ</div>
+    <div class="rb">
+      文部科学省2024年度調査では、不登校の理由1位は<strong>「学校へのやる気が出ない」（32%）</strong>。中学生では15人に1人が不登校状態にあり、12年連続で増加しています。「うちだけ」ではなく、現代社会全体の課題です。
+    </div>
+  </div>
+
+  <!-- 目指す姿 -->
+  <div class="section-title">🎯 目指す姿</div>
+  <div class="vision-box">
+    <div class="vt">ゴール</div>
+    <div class="vc">
+      「学校に行かせること」ではなく<br>
+      「今日はどうするか」を自分で決められる子<br>
+      家が安心できる場所だと感じている状態
+    </div>
+  </div>
+
+  <!-- アクション -->
+  <div class="section-title">✅ 今日からできるアクション</div>
+
+  <div class="action-item">
+    <div class="action-num">1</div>
+    <div class="action-content">
+      <div class="act">「なんで行けないの？」を絶対に言わない</div>
+      <div class="how">理由を問い詰めると子どもは「責められている」と感じます。実は本人もなぜ行けないのか言語化できていないことがほとんどです。まず気持ちを受け止めることが最優先です。</div>
+      <div class="example">
+        <div class="example-label">💬 使える言葉</div>
+        「そうか、今日はつらいんだね」<br>
+        「無理しなくていいよ」<br>
+        「そばにいるよ」<br>
+        「お腹痛いんだね、つらいね」
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">2</div>
+    <div class="action-content">
+      <div class="act">毎朝「気持ち温度計」を使う</div>
+      <div class="how">「行くか・行かないか」の二択を子どもに迫ると、答えられず固まってしまいます。代わりに「今日は何点？（10点満点）」と聞くだけで、子どもが自分で判断しやすくなります。</div>
+      <div class="example">
+        <div class="example-label">📝 点数別の対応</div>
+        1〜3点 → 今日は休む・保健室登校でOK<br>
+        4〜6点 → 「どこまで行けそう？」と一緒に考える<br>
+        7〜10点 → チャレンジしてみる（次のステップへ）
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">3</div>
+    <div class="action-content">
+      <div class="act">朝の体調不良は「仮病」と思わない</div>
+      <div class="how">「お腹が痛い」「頭が痛い」は本物の痛みです。「またお腹？」と疑うと信頼関係が壊れます。まず「本当に痛いんだね」と認めてあげてください。</div>
+      <div class="example">
+        <div class="example-label">💬 使える言葉</div>
+        「お腹痛いんだね、横になろうか」<br>
+        「無理しないで休もう」
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">4</div>
+    <div class="action-content">
+      <div class="act">学校以外の「安全な場所」を作る</div>
+      <div class="how">家以外にも「ここなら安心」と思える場所があると回復が早まります。祖父母の家・図書館・公園など、学校じゃない場所で過ごす時間を意識的に作ってください。</div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">5</div>
+    <div class="action-content">
+      <div class="act">学校と連絡を取り続ける（保護者だけで）</div>
+      <div class="how">子どもを連絡係にしないでください。「学校と話すのは親の仕事、あなたは休んでいい」というメッセージを伝えることで、子どもの罪悪感が減ります。</div>
+      <div class="example">
+        <div class="example-label blue">📞 学校に伝えること</div>
+        「しばらく休ませてほしい」<br>
+        「家での様子は伝える」<br>
+        「無理に登校刺激はしないでほしい」
+      </div>
+    </div>
+  </div>
+
+  <!-- NG言葉 -->
+  <div class="section-title">❌ やってはいけないこと</div>
+  <div class="box box-red">
+    <div class="box-label">禁句リスト</div>
+    <ul class="ng-list">
+      <li>「みんな頑張ってるのに、なんであなただけ」</li>
+      <li>「甘えてるだけでしょ」「気のせい」</li>
+      <li>「いつまで休むの？」「明日は行ける？」</li>
+      <li>「学校くらい行きなさい」</li>
+      <li>「お父さん（お母さん）が困るんだから」</li>
+      <li>「将来どうするの？」「勉強遅れるよ」</li>
+    </ul>
+    <div style="font-size:11px; color:var(--red); margin-top:8px; font-weight:700;">
+      → これらは全て子どもを追い詰めます<br>
+      → 言いたくなる気持ちはわかりますが、グッと飲み込んで
+    </div>
+  </div>
+
+  <!-- 回復までの流れ -->
+  <div class="section-title">📅 回復までのおおまかな流れ</div>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-stage">STAGE 1　ショック期（1〜2週間）</div>
+      <div class="timeline-title">混乱・体調不良が強い時期</div>
+      <div class="timeline-body">完全に休ませる。学校のことは一切話さない。安心できる環境を最優先。</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-stage">STAGE 2　休息期（2週間〜数ヶ月）</div>
+      <div class="timeline-title">エネルギーを溜める時期</div>
+      <div class="timeline-body">家で安心して過ごせるようにする。ゲーム・YouTube・本など、興味のあることをさせてOK。</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-stage">STAGE 3　回復期（数週間〜数ヶ月）</div>
+      <div class="timeline-title">少しずつ外の世界に興味が向く時期</div>
+      <div class="timeline-body">外出・友達との会話などが増えてくる。焦らず子どものペースで。</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-stage">STAGE 4　再活動期</div>
+      <div class="timeline-title">次のステップを考える時期</div>
+      <div class="timeline-body">学校復帰・転校・フリースクールなど、選択肢を一緒に考える。</div>
+    </div>
+  </div>
+
+  <!-- 親自身のケア -->
+  <div class="section-title">💚 親自身もケアして</div>
+  <div class="box box-purple">
+    <div class="box-label">親が倒れたら共倒れになります</div>
+    <div class="box-body">
+      不登校対応は親自身もストレスを溜め込みやすい状況です。次のことを意識してください。<br><br>
+      <strong>① 一人で抱え込まない</strong><br>
+      パートナー・友人・専門家など、話せる相手を必ず作る。<br><br>
+      <strong>② 自分を責めない</strong><br>
+      不登校は親のせいではありません。日本の中学生の15人に1人が不登校です。<br><br>
+      <strong>③ 親も休む時間を作る</strong><br>
+      自分の趣味・休息を意識的に取る。子どもの前で笑顔でいるためにも必要です。
+    </div>
+  </div>
+
+  <!-- 専門家サイン -->
+  <div class="expert-box">
+    <div class="et">🔵 専門家への相談を検討するサイン</div>
+    <ul>
+      <li>1ヶ月以上不登校が続いている</li>
+      <li>食事・睡眠が極端に乱れている</li>
+      <li>「死にたい」「消えたい」と言うことがある</li>
+      <li>家から一切出られない状態が続いている</li>
+      <li>親に対しても暴力的になっている</li>
+    </ul>
+    <div style="font-size:11.5px; color:var(--text); margin-top:8px;">
+      該当する場合は、スクールカウンセラー・教育相談センター・小児科医・児童精神科への相談をおすすめします。
+    </div>
+  </div>
+
+  <!-- 次のステップ -->
+  <div class="next-cta">
+    <div class="next-cta-label">次のステップ</div>
+    <h4>「うちの子に合った対応をもっと知りたい」<br>そんな方へ</h4>
+    <p>のびしろ公式LINEで<br><strong>無料の個別相談（30分）</strong>を受け付けています。<br>元小学校教員9年・のびお先生が直接お話します。</p>
+    <a href="https://lin.ee/WeJVUEhF" class="next-cta-btn">📩 LINE登録して無料相談を受ける</a>
+  </div>
+</div>
+
+<!-- ========== タイプB ========== -->
+<div class="action-panel" id="panel-b">
+  <div class="panel-header">
+    <div class="panel-emoji">😶</div>
+    <div class="panel-title">
+      <h3>タイプB｜何もしたくない・無気力</h3>
+      <p>部屋に閉じこもる・会話が減った・ゲームばかり</p>
+    </div>
+  </div>
+
+  <div class="section-title">🔍 なぜこうなるのか</div>
+  <div class="why-card">
+    <div class="why-title">📚 子どもの心に起きていること</div>
+    <div class="why-body">
+      無気力は<strong>「全力で戦って疲れ切った状態」</strong>です。<br><br>
+      子どもが学校・人間関係・自分との戦いで限界まで頑張った結果、エネルギーが完全に枯渇している状態。「やる気がない」のではなく、「やる気が湧いてくる余力すらない」のです。<br><br>
+      この時期はゲーム・YouTube・寝てばかりに見えますが、それは<strong>意図的に脳を休めている回復行動</strong>です。
+    </div>
+  </div>
+
+  <div class="research-card">
+    <div class="rt">📊 研究データ</div>
+    <div class="rb">
+      京都子ども調査（2018年）では、自己肯定感の低い子どもほど無気力・引きこもり傾向になりやすいことが報告されています。一方で、親への信頼感が高い子どもは回復が早いことも実証されています。
+    </div>
+  </div>
+
+  <div class="section-title">🎯 目指す姿</div>
+  <div class="vision-box">
+    <div class="vt">ゴール</div>
+    <div class="vc">
+      小さなことに楽しさを感じられる子<br>
+      「今日できたこと」を自分で言えるようになった状態
+    </div>
+  </div>
+
+  <div class="section-title">✅ 今日からできるアクション</div>
+
+  <div class="action-item">
+    <div class="action-num">1</div>
+    <div class="action-content">
+      <div class="act">「充電期間」として受け入れる</div>
+      <div class="how">無気力期間を「ダメな期間」ではなく「必要な休息」と捉えてください。スマホも充電が必要なように、子どもの心にも充電期間が必要です。</div>
+      <div class="example">
+        <div class="example-label">💬 使える言葉</div>
+        「ゆっくり休んでいいよ」<br>
+        「充電中だよね、大丈夫」<br>
+        「今は何もしなくていい」
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">2</div>
+    <div class="action-content">
+      <div class="act">「できたこと日記」を一緒に始める</div>
+      <div class="how">毎晩、どんな小さなことでも「今日できたこと」を1つ書く習慣をつけます。学校以外での成功体験を積み重ねることで、自己肯定感が少しずつ回復します。</div>
+      <div class="example">
+        <div class="example-label">📝 こんな小さなことでOK</div>
+        「今日ご飯を食べられた」<br>
+        「外に出て空気を吸えた」<br>
+        「弟と少し話せた」<br>
+        「お風呂に入れた」<br>
+        「自分で目が覚めた」
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">3</div>
+    <div class="action-content">
+      <div class="act">ゲーム・YouTubeを頭ごなしに禁止しない</div>
+      <div class="how">今は安心できる世界が必要な時期です。完全に取り上げると唯一の居場所を失います。時間を決めながら共存する方が回復が早まります。</div>
+      <div class="example">
+        <div class="example-label red">注意</div>
+        ただし睡眠時間に影響するレベル（深夜まで・朝起きられない）であれば、子どもと相談してルールを決めることは必要です。
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">4</div>
+    <div class="action-content">
+      <div class="act">「興味の種」を見逃さない</div>
+      <div class="how">子どもがふと興味を示したもの・笑顔になった瞬間を大切にしてください。「今度一緒にやってみる？」と提案する素材になります。</div>
+      <div class="example">
+        <div class="example-label blue">観察するポイント</div>
+        ・何を見ているとき笑顔になるか<br>
+        ・何の話題なら反応するか<br>
+        ・どんな本・動画を選ぶか
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">5</div>
+    <div class="action-content">
+      <div class="act">親も「無言の時間」を共有する</div>
+      <div class="how">無理に話さなくていいです。同じ部屋にいる・一緒にテレビを見る、それだけで子どもは「一人じゃない」と感じます。</div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">6</div>
+    <div class="action-content">
+      <div class="act">食事を一緒にとる（無理のない範囲で）</div>
+      <div class="how">食事は家族との大切な接点です。子どもが食卓に来なくても、リビングで一緒に食べる時間を作ってください。会話がなくてもOKです。</div>
+    </div>
+  </div>
+
+  <div class="section-title">❌ やってはいけないこと</div>
+  <div class="box box-red">
+    <div class="box-label">禁句リスト</div>
+    <ul class="ng-list">
+      <li>「ゲームばかりして」「いつまでスマホ見てるの」</li>
+      <li>「そんなことしてどうするの」</li>
+      <li>「部屋から出なさい」と怒鳴る</li>
+      <li>「いつまで休むつもり？」</li>
+      <li>「お父さん（お母さん）も疲れてるんだから」</li>
+      <li>「もうちょっと頑張ってみたら」</li>
+    </ul>
+    <div style="font-size:11px; color:var(--red); margin-top:8px; font-weight:700;">
+      → 唯一の安心できる場所を奪うことになります
+    </div>
+  </div>
+
+  <div class="section-title">💡 回復のサインを見逃さない</div>
+  <div class="box box-green">
+    <div class="box-title">こんな小さな変化が「回復のはじまり」</div>
+    <ul class="ok-list">
+      <li>朝起きる時間が安定してきた</li>
+      <li>食欲が戻ってきた</li>
+      <li>笑顔が増えた・冗談を言うようになった</li>
+      <li>外に少し出るようになった</li>
+      <li>親と会話する時間が増えた</li>
+      <li>身だしなみを気にし始めた</li>
+    </ul>
+    <div style="font-size:11.5px; color:var(--text); margin-top:8px;">
+      これらが見えてきたら、次の「タイプE｜回復してきた」に進んでください。
+    </div>
+  </div>
+
+  <div class="expert-box">
+    <div class="et">🔵 専門家への相談を検討するサイン</div>
+    <ul>
+      <li>2週間以上、ほぼ会話がない状態が続いている</li>
+      <li>食事をほとんどとらない・極端に痩せてきた</li>
+      <li>睡眠が極端に乱れている（昼夜逆転が1ヶ月以上）</li>
+      <li>身の回りのことを一切しなくなった</li>
+      <li>「死にたい」「消えたい」と言うことがある</li>
+    </ul>
+  </div>
+
+  <div class="next-cta">
+    <div class="next-cta-label">次のステップ</div>
+    <h4>「どこまで待てばいいの？」<br>その答え、一緒に考えませんか</h4>
+    <p>のびしろ公式LINEで<br><strong>無料の個別相談（30分）</strong>を受け付けています。<br>具体的な目安・対応をお伝えします。</p>
+    <a href="https://lin.ee/WeJVUEhF" class="next-cta-btn">📩 LINE登録して無料相談を受ける</a>
+  </div>
+</div>
+
+<!-- ========== タイプC ========== -->
+<div class="action-panel" id="panel-c">
+  <div class="panel-header">
+    <div class="panel-emoji">😠</div>
+    <div class="panel-title">
+      <h3>タイプC｜怒りやすい・反抗的</h3>
+      <p>すぐキレる・暴言・物を壊す・親に当たる</p>
+    </div>
+  </div>
+
+  <div class="section-title">🔍 なぜこうなるのか</div>
+  <div class="why-card">
+    <div class="why-title">📚 怒りは「二次感情」です</div>
+    <div class="why-body">
+      心理学では、怒りは<strong>「二次感情」</strong>と呼ばれます。怒りの裏には必ず「もっと深い感情」が隠れています。<br><br>
+      ・<strong>怖い</strong>（学校・人間関係への恐怖）<br>
+      ・<strong>悲しい</strong>（理解されない苦しみ）<br>
+      ・<strong>不安</strong>（将来への漠然とした不安）<br>
+      ・<strong>無力感</strong>（自分ではどうにもできない感覚）<br><br>
+      これらの感情を言葉にできず、怒りという形で噴き出しているのです。怒りそのものを止めても、根本は変わりません。<strong>裏の感情に目を向けることが大切</strong>です。
+    </div>
+  </div>
+
+  <div class="research-card">
+    <div class="rt">📊 心理学的背景</div>
+    <div class="rb">
+      ボウルビィの愛着理論では、思春期の子どもが親に対して攻撃的になるのは「親が安全基地である」という確信があるからこそ起きる現象とされています。<strong>怒りをぶつけられる＝信頼されている証拠</strong>でもあるのです。
+    </div>
+  </div>
+
+  <div class="section-title">🎯 目指す姿</div>
+  <div class="vision-box">
+    <div class="vt">ゴール</div>
+    <div class="vc">
+      怒りを言葉で表現できる子<br>
+      「つらい」「怖い」と正直に言える状態
+    </div>
+  </div>
+
+  <div class="section-title">✅ 今日からできるアクション</div>
+
+  <div class="action-item">
+    <div class="action-num">1</div>
+    <div class="action-content">
+      <div class="act">爆発している最中は「その場を離れる」</div>
+      <div class="how">怒り最中に説得しようとすると100%逆効果になります。お互い感情的になるだけです。「少し時間をおこう」と言って物理的に距離を取り、お互いが落ち着いてから話し合ってください。</div>
+      <div class="example">
+        <div class="example-label">💬 使える言葉</div>
+        「少し落ち着いてから話そう」<br>
+        「あなたのこと大切だから、落ち着いてから聞くね」<br>
+        「ちょっと別の部屋で考えてみるね」
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">2</div>
+    <div class="action-content">
+      <div class="act">落ち着いた後に「裏の感情」を探す</div>
+      <div class="how">怒りそのものを責めず、裏に何があるかを聞いてください。「なぜ怒ったの」ではなく「何がつらかったの？」と聞きます。</div>
+      <div class="example">
+        <div class="example-label">💬 落ち着いた後に使える言葉</div>
+        「さっき怒ってたけど、本当は何が嫌だった？」<br>
+        「怖いことあった？」<br>
+        「本当は何がつらかったの？」<br>
+        「もしかして、誰かに何か言われた？」
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">3</div>
+    <div class="action-content">
+      <div class="act">怒りを発散できる方法を一緒に探す</div>
+      <div class="how">怒りを溜め込ませると爆発します。安全に発散できる方法を子どもと一緒に考えてください。</div>
+      <div class="example">
+        <div class="example-label blue">発散方法の例</div>
+        ・クッションを叩く・蹴る<br>
+        ・大声で叫ぶ（公園・カラオケなど）<br>
+        ・体を動かす（散歩・ランニング）<br>
+        ・紙にぐちゃぐちゃ書く・破る<br>
+        ・絵を描く・楽器を弾く
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">4</div>
+    <div class="action-content">
+      <div class="act">親自身が感情的にならない環境を作る</div>
+      <div class="how">子どもの怒りに親も怒りで返すと悪循環になります。「今日は私もしんどい」と感じたら、一人になる時間を意識的に作ってください。</div>
+      <div class="example">
+        <div class="example-label">親のセルフケア</div>
+        ・自分の時間を10分でも作る<br>
+        ・パートナーや友人に話す<br>
+        ・深呼吸・瞑想を取り入れる<br>
+        ・親自身もカウンセリングを受ける
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">5</div>
+    <div class="action-content">
+      <div class="act">怒っていないときの「いい時間」を増やす</div>
+      <div class="how">怒っているときばかりに対応していると、子どもは「怒れば構ってもらえる」と学習します。穏やかなときに積極的に話しかけ、ポジティブな関わりを増やしてください。</div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">6</div>
+    <div class="action-content">
+      <div class="act">家庭内のルールを最小限にする</div>
+      <div class="how">細かいルールが多いと、それ自体が怒りの引き金になります。「これだけは守る」という最低限のルール（暴力をしない・命に関わることはしない）に絞ってください。</div>
+    </div>
+  </div>
+
+  <div class="section-title">❌ やってはいけないこと</div>
+  <div class="box box-red">
+    <div class="box-label">禁句リスト</div>
+    <ul class="ng-list">
+      <li>怒りに怒りで返す</li>
+      <li>力で押さえつける・体罰</li>
+      <li>「そんな子に育てた覚えはない」と存在を否定する</li>
+      <li>「お父さんに言うよ」「先生に言うよ」と脅す</li>
+      <li>怒ったときに大事なものを取り上げる</li>
+      <li>他の兄弟・友達と比較する</li>
+    </ul>
+    <div style="font-size:11px; color:var(--red); margin-top:8px; font-weight:700;">
+      → 怒りがさらに強くなり、親子関係が崩壊します
+    </div>
+  </div>
+
+  <div class="section-title">💡 怒りのサイクルを止める</div>
+  <div class="box box-blue">
+    <div class="box-title">怒りのサイクル</div>
+    <div class="box-body">
+      <strong>子の怒り → 親の怒り → 子の怒り増幅 → 関係悪化</strong><br><br>
+      このサイクルを止めるには、<strong>親の側が先に冷静になる</strong>ことが必要です。子どもは親の反応を見ています。親が落ち着いていれば、子どもも徐々に落ち着けるようになります。
+    </div>
+  </div>
+
+  <div class="expert-box">
+    <div class="et">🔵 専門家への相談を強くおすすめするサイン</div>
+    <ul>
+      <li>物を壊す行動が続いている</li>
+      <li>自分や他者を傷つける行動がある</li>
+      <li>親が暴力を受けている</li>
+      <li>怒りのコントロールが全くできない</li>
+      <li>怒りの後に強い罪悪感で落ち込む</li>
+    </ul>
+    <div style="font-size:11.5px; color:var(--text); margin-top:8px;">
+      該当する場合は、児童精神科・心療内科への相談をおすすめします。アンガーマネジメントのプログラムも有効です。
+    </div>
+  </div>
+
+  <div class="next-cta">
+    <div class="next-cta-label">次のステップ</div>
+    <h4>「どう接すればいいかわからない」<br>そんな方へ</h4>
+    <p>のびしろ公式LINEで<br><strong>無料の個別相談（30分）</strong>を受け付けています。<br>学校現場で見てきた経験からお話できます。</p>
+    <a href="https://lin.ee/WeJVUEhF" class="next-cta-btn">📩 LINE登録して無料相談を受ける</a>
+  </div>
+</div>
+
+<!-- ========== タイプD ========== -->
+<div class="action-panel" id="panel-d">
+  <div class="panel-header">
+    <div class="panel-emoji">😔</div>
+    <div class="panel-title">
+      <h3>タイプD｜自分を責めている</h3>
+      <p>「どうせダメ」「消えたい」「自分が悪い」</p>
+    </div>
+  </div>
+
+  <div class="section-title">🔍 なぜこうなるのか</div>
+  <div class="why-card">
+    <div class="why-title">📚 自己肯定感が極端に下がっている状態</div>
+    <div class="why-body">
+      子どもが自分を責めるのは、<strong>「自分はダメな存在だ」</strong>という思い込みが強くなっている状態です。<br><br>
+      認知行動療法（CBT）では、これを<strong>「認知の歪み」</strong>と呼びます。<br>
+      ・自分だけがダメだ（全か無か思考）<br>
+      ・どうせ何をやってもダメ（一般化のしすぎ）<br>
+      ・自分が悪いから周りも迷惑（自己関連付け）<br><br>
+      この状態は本人にとって本当に苦しく、放置すると<strong>うつ症状や自傷行為につながる可能性</strong>があります。最も注意が必要な状態です。
+    </div>
+  </div>
+
+  <div class="research-card">
+    <div class="rt">📊 研究データ</div>
+    <div class="rb">
+      内閣府（2018年）の調査では、日本の子どもの自己肯定感は<strong>わずか45%</strong>。アメリカ（86%）と比べて圧倒的に低い水準です。背景には、日本の文化的な「謙遜の美徳」「結果重視の評価」があると指摘されています。
+    </div>
+  </div>
+
+  <div class="section-title">🎯 目指す姿</div>
+  <div class="vision-box">
+    <div class="vt">ゴール</div>
+    <div class="vc">
+      「自分はここにいていい」と感じられる子<br>
+      失敗しても「また挑戦しよう」と思える状態
+    </div>
+  </div>
+
+  <div class="section-title">✅ 今日からできるアクション</div>
+
+  <div class="action-item">
+    <div class="action-num">1</div>
+    <div class="action-content">
+      <div class="act">「存在そのもの」を肯定する言葉をかける</div>
+      <div class="how">「100点とったからすごい」ではなく、何もできなくても「あなたがいてくれるだけで嬉しい」という言葉が自己肯定感の土台になります。これを<strong>「条件なしの愛情」</strong>と言います。</div>
+      <div class="example">
+        <div class="example-label">💬 今日から使える言葉</div>
+        「あなたがいてくれるだけで嬉しいよ」<br>
+        「学校行けなくてもあなたは大切な存在」<br>
+        「失敗しても大好きだよ」<br>
+        「生まれてきてくれてありがとう」<br>
+        「あなたのこと、誰よりも信じてる」
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">2</div>
+    <div class="action-content">
+      <div class="act">「消えたい」という言葉を絶対に軽視しない</div>
+      <div class="how">「消えたい」「死にたい」という言葉が出たとき、叱ったり無視したりしないでください。「そんなに辛かったんだね」とまず受け止め、その後すぐに専門家に相談してください。</div>
+      <div class="example">
+        <div class="example-label red">⚠️ 絶対NG</div>
+        ❌「そんなこと言わないで」<br>
+        ❌「縁起でもない」<br>
+        ❌「冗談でしょ？」<br>
+        ❌ 笑い飛ばす・聞き流す<br><br>
+        <div class="example-label">✅ 代わりに言う</div>
+        「そんなにつらいんだね」<br>
+        「話してくれてありがとう」<br>
+        「一緒に考えよう、一人にしないよ」
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">3</div>
+    <div class="action-content">
+      <div class="act">「できたこと」にフォーカスする</div>
+      <div class="how">「学校に行けなかった」ではなく「今日ご飯を食べられた」「話しかけてくれた」など、小さなことを毎日言葉にして伝えてください。1日3つ書き出す「3 good things」も効果的です。</div>
+      <div class="example">
+        <div class="example-label">📝 「3つの良いこと」を書く</div>
+        毎晩寝る前に、その日あった「良いこと」を3つ書く。<br>
+        例：①ご飯がおいしかった<br>　　②空がきれいだった<br>　　③お母さんが笑ってくれた<br><br>
+        ペンシルベニア大学の研究で、3週間続けると幸福度が有意に上がることが実証されています。
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">4</div>
+    <div class="action-content">
+      <div class="act">「思考の記録」をつけてもらう（できれば）</div>
+      <div class="how">CBTの基本技法です。「自分はダメだ」という考えが浮かんだとき、それを書き出して「本当にそう？」と検証する習慣をつけます。最初は親が一緒にやってあげてください。</div>
+      <div class="example">
+        <div class="example-label">📝 書き方の例</div>
+        ① 今日嫌だったこと：友達にラインの返事が来なかった<br>
+        ② 浮かんだ考え：「私は嫌われてる」<br>
+        ③ 別の見方：「忙しかっただけかも」「他にも仲のいい子はいる」
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">5</div>
+    <div class="action-content">
+      <div class="act">他者と比較しない・させない</div>
+      <div class="how">「〇〇ちゃんはできてるのに」は絶対NGです。比較は自己肯定感を破壊します。比較するなら<strong>「過去の自分」</strong>とのみ。</div>
+      <div class="example">
+        <div class="example-label">💬 使える言葉</div>
+        「昨日のあなたより、今日のあなたが少し進んでる」<br>
+        「1ヶ月前と比べたら〇〇ができるようになったね」
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">6</div>
+    <div class="action-content">
+      <div class="act">スキンシップを増やす</div>
+      <div class="how">言葉だけでなく、ハグ・肩に手を置く・頭をなでるなどのスキンシップは「あなたは大切」というメッセージを直接伝えます。オキシトシン（愛情ホルモン）が分泌され、自己肯定感が回復しやすくなります。</div>
+    </div>
+  </div>
+
+  <div class="section-title">❌ やってはいけないこと</div>
+  <div class="box box-red">
+    <div class="box-label">禁句リスト</div>
+    <ul class="ng-list">
+      <li>「そんなこと言わないで」と言葉を封じる</li>
+      <li>「もっと頑張れば変わる」とプレッシャー</li>
+      <li>「みんな大変だよ」と比較する</li>
+      <li>「気の持ちようだよ」と軽く受け流す</li>
+      <li>「うちの子は弱い」と他人の前で言う</li>
+      <li>褒める時に条件をつける（「〇〇できたから偉い」）</li>
+    </ul>
+    <div style="font-size:11px; color:var(--red); margin-top:8px; font-weight:700;">
+      → 「誰にも言えない」という孤立につながります
+    </div>
+  </div>
+
+  <div class="section-title">🆘 緊急時の対応</div>
+  <div class="box box-red">
+    <div class="box-title" style="color:var(--red);">⚠️ 命に関わるサインが出たら</div>
+    <div class="box-body">
+      <strong>すぐに対応すべき緊急サイン</strong><br>
+      ・「死にたい」と具体的に話す<br>
+      ・自分を傷つける行動をしている<br>
+      ・遺書のようなものを書いている<br>
+      ・大切なものを人に譲り始める<br>
+      ・急に明るくなった（覚悟を決めた可能性）<br><br>
+      <strong>連絡先</strong><br>
+      ・よりそいホットライン：0120-279-338（24時間無料）<br>
+      ・いのちの電話：0120-783-556<br>
+      ・お住まいの地域の精神科・児童精神科<br>
+      ・救急医療機関（緊急時）
+    </div>
+  </div>
+
+  <div class="expert-box">
+    <div class="et">🔵 専門家への相談を強くおすすめします</div>
+    <ul>
+      <li>「消えたい」「死にたい」という言葉が続く</li>
+      <li>自分を傷つける行動がある（リストカット等）</li>
+      <li>食事を極端に拒否する・過食嘔吐する</li>
+      <li>2週間以上、ほぼ笑顔がない・全てに興味を失っている</li>
+    </ul>
+    <div style="font-size:11.5px; color:var(--text); margin-top:8px;">
+      <strong>一人で抱えないでください。</strong>うつ病・不安障害の可能性があります。早期の専門的介入で改善が早まります。
+    </div>
+  </div>
+
+  <div class="next-cta">
+    <div class="next-cta-label">次のステップ</div>
+    <h4>この状態、一人で抱えないでください<br>すぐに次の一手を一緒に</h4>
+    <p>のびしろ公式LINEで<br><strong>無料の個別相談（30分）</strong>を受け付けています。<br>すぐに対応できるよう、優先的に時間を確保します。</p>
+    <a href="https://lin.ee/WeJVUEhF" class="next-cta-btn">📩 LINE登録して無料相談を受ける</a>
+  </div>
+</div>
+
+<!-- ========== タイプE ========== -->
+<div class="action-panel" id="panel-e">
+  <div class="panel-header">
+    <div class="panel-emoji">🌀</div>
+    <div class="panel-title">
+      <h3>タイプE｜回復してきた・次のステップ</h3>
+      <p>少し外に出た・話すようになった・笑顔が戻ってきた</p>
+    </div>
+  </div>
+
+  <div class="section-title">🔍 この段階で起きていること</div>
+  <div class="why-card">
+    <div class="why-title">📚 心のエネルギーが戻ってきた状態</div>
+    <div class="why-body">
+      子どもの中に<strong>「もう一度やってみようかな」という気持ち</strong>が芽生え始めている、とても大事な時期です。<br><br>
+      ただし注意点があります。回復期は<strong>「波がある」</strong>のが普通です。<br>
+      ・調子のいい日と悪い日が交互に来る<br>
+      ・少し進んで、また戻ることがある<br>
+      ・急に元気になったり、急に落ち込んだりする<br><br>
+      これは正常な経過です。大事なのは<strong>後退しても焦らないこと</strong>。
+    </div>
+  </div>
+
+  <div class="research-card">
+    <div class="rt">📊 海外の研究より</div>
+    <div class="rb">
+      不登校支援に関する海外のメタ分析（25本の研究を統合）では、<strong>段階的な復帰（漸進的暴露）</strong>が最も効果的で、約70%の子どもにポジティブな変化が見られたと報告されています。いきなり全日登校を目指すより、少しずつ慣らす方が成功率が高いです。
+    </div>
+  </div>
+
+  <div class="section-title">🎯 目指す姿</div>
+  <div class="vision-box">
+    <div class="vt">ゴール</div>
+    <div class="vc">
+      自分のペースで社会とつながれる子<br>
+      「次に挑戦してみよう」と自分で決められる状態
+    </div>
+  </div>
+
+  <div class="section-title">✅ 今日からできるアクション</div>
+
+  <div class="action-item">
+    <div class="action-num">1</div>
+    <div class="action-content">
+      <div class="act">「回復のサイン」を見逃さず言葉にして伝える</div>
+      <div class="how">子どもは自分の変化に気づいていないことが多いです。「最近少し顔色がいいね」「昨日より話してくれたね」と親が変化を言葉にすることで自信につながります。</div>
+      <div class="example">
+        <div class="example-label">💬 使える言葉</div>
+        「昨日より笑顔が増えたね」<br>
+        「今日外に出られたじゃん、すごいよ」<br>
+        「最近よく寝てるね」<br>
+        「ご飯おいしそうに食べてるね」
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">2</div>
+    <div class="action-content">
+      <div class="act">「不安の階段」で次の一歩を一緒に決める</div>
+      <div class="how">いきなり登校を目指さず、子どもと一緒に「次にできそうなこと」を1つだけ決めます。<strong>子どもが決める</strong>ことが大切です。</div>
+      <div class="example">
+        <div class="example-label">📝 不安の階段の例</div>
+        STEP1 学校の前を通る<br>
+        STEP2 学校のグラウンドまで行く<br>
+        STEP3 保健室に行く（30分）<br>
+        STEP4 先生と1対1で話す<br>
+        STEP5 別室登校（午前のみ）<br>
+        STEP6 1時間目だけ出席<br>
+        STEP7 午前中だけ出席<br>
+        STEP8 普通に登校<br><br>
+        ※必ず子どもと一緒に決める<br>
+        ※1段に何週間かかってもOK
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">3</div>
+    <div class="action-content">
+      <div class="act">「焦り」を子どもに見せない</div>
+      <div class="how">回復期に親が「早く学校に」と焦ると、子どもはその空気を敏感に感じ取ります。「このペースで大丈夫」という姿勢を保ってください。</div>
+      <div class="example">
+        <div class="example-label">💬 使える言葉</div>
+        「あなたのペースで進んでいこう」<br>
+        「焦らなくていいよ、一緒に考えよう」<br>
+        「戻っちゃってもいい、また進めばいい」
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">4</div>
+    <div class="action-content">
+      <div class="act">学校・先生との連携を再開する</div>
+      <div class="how">子どもの回復に合わせて、学校との連携も少しずつ再開します。担任やスクールカウンセラーと、子どもの状況を共有してください。</div>
+      <div class="example">
+        <div class="example-label blue">伝えるポイント</div>
+        ・子どもの今の状態<br>
+        ・できそうなこと・できないこと<br>
+        ・学校に求めるサポート<br>
+        ・段階的に進めたい旨
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">5</div>
+    <div class="action-content">
+      <div class="act">「学校以外の選択肢」も視野に入れる</div>
+      <div class="how">必ずしも今までの学校に戻ることがゴールではありません。フリースクール・転校・通信制・ホームスクーリングなど、子どもに合った選択肢を一緒に考えてください。</div>
+      <div class="example">
+        <div class="example-label">選択肢の例</div>
+        ・別室登校・保健室登校<br>
+        ・フリースクール<br>
+        ・教育支援センター（学校復帰の中間施設）<br>
+        ・転校（環境を変える）<br>
+        ・通信制中学・高校<br>
+        ・ホームスクーリング
+      </div>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="action-num">6</div>
+    <div class="action-content">
+      <div class="act">小さな成功体験を積み重ねる</div>
+      <div class="how">学校以外でも「できた」を増やしてください。趣味・習い事・家のお手伝いなど、何でも構いません。「自分はできる」という感覚（自己効力感）が次のステップへの推進力になります。</div>
+    </div>
+  </div>
+
+  <div class="section-title">⚠️ 後退したときの対応</div>
+  <div class="box box-gold">
+    <div class="box-label">回復は直線ではない</div>
+    <div class="box-body">
+      回復期に「3歩進んで2歩下がる」のは普通のことです。<br><br>
+      <strong>後退したときに大事なこと</strong><br>
+      ✅ 「やっぱりダメだったね」と言わない<br>
+      ✅ 「少し休もうか」と認める<br>
+      ✅ また少し前に戻ってもOKとする<br>
+      ✅ 焦って急がせない<br><br>
+      <strong>後退は失敗ではなく、「ここはまだ早かった」というサイン</strong>です。1段戻って、また少しずつ進めばいいのです。
+    </div>
+  </div>
+
+  <div class="section-title">❌ やってはいけないこと</div>
+  <div class="box box-red">
+    <div class="box-label">禁句リスト</div>
+    <ul class="ng-list">
+      <li>「回復してきたね、じゃあ明日から学校行けるね」</li>
+      <li>「もう大丈夫だね」と決めつける</li>
+      <li>後退したときに「やっぱりダメだったね」と言う</li>
+      <li>急に元の生活を取り戻そうとする</li>
+      <li>子どもの意思を無視して進路を決める</li>
+    </ul>
+    <div style="font-size:11px; color:var(--red); margin-top:8px; font-weight:700;">
+      → 一気に進めようとすると、振り出しに戻ります
+    </div>
+  </div>
+
+  <div class="section-title">📅 段階別の親の関わり方</div>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-stage">PHASE 1　兆し期</div>
+      <div class="timeline-title">回復のサインが見え始める</div>
+      <div class="timeline-body">変化を言葉にして伝える。プレッシャーをかけない。「焦らなくていい」を伝える。</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-stage">PHASE 2　準備期</div>
+      <div class="timeline-title">外に出る・人と話せるようになる</div>
+      <div class="timeline-body">不安の階段を子どもと一緒に作る。学校との連携を再開する。選択肢を一緒に考える。</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-stage">PHASE 3　行動期</div>
+      <div class="timeline-title">不安の階段を実際に進む</div>
+      <div class="timeline-body">小さな成功を全力で認める。後退しても焦らない。子どものペースに合わせる。</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-stage">PHASE 4　維持期</div>
+      <div class="timeline-title">新しい生活が安定する</div>
+      <div class="timeline-body">継続できる環境を整える。再発のサインに気をつける。親自身も少しずつ手を離す。</div>
+    </div>
+  </div>
+
+  <div class="expert-box">
+    <div class="et">🔵 専門家と連携すべきタイミング</div>
+    <ul>
+      <li>進路の選択（フリースクール・転校など）で迷っている</li>
+      <li>学校との連携がうまくいかない</li>
+      <li>不安の階段の作り方がわからない</li>
+      <li>子どもの状態が不安定で判断に迷う</li>
+    </ul>
+  </div>
+
+  <div class="next-cta">
+    <div class="next-cta-label">次のステップ</div>
+    <h4>「次のステップどうすれば？」<br>具体的な計画を一緒に</h4>
+    <p>のびしろ公式LINEで<br><strong>無料の個別相談（30分）</strong>を受け付けています。<br>学校との連携・進路の選択・不安の階段の作り方<br>具体的にお話できます。</p>
+    <a href="https://lin.ee/WeJVUEhF" class="next-cta-btn">📩 LINE登録して無料相談を受ける</a>
+  </div>
+</div>
+
+<div class="footer">
+  のびしろ｜のびお先生　元小学校教員9年 / 教育コンサルタント<br>
+  子×親＝無限の可能性<br><br>
+  ※このガイドは軽度〜中度の不登校を対象としています。<br>
+  重篤な症状がある場合は必ず医療機関にご相談ください。
+</div>
+
+<script>
+function showPanel(type, btn) {
+  document.querySelectorAll('.action-panel').forEach(p => p.classList.remove('show'));
+  document.querySelectorAll('.child-card').forEach(c => c.classList.remove('active'));
+  const panel = document.getElementById('panel-' + type);
+  panel.classList.add('show');
+  btn.classList.add('active');
+  setTimeout(() => {
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+</script>
+</body>
+</html>
